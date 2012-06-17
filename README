@@ -1,0 +1,86 @@
+NAME
+    Code::TidyAll - Engine for tidyall, your all-in-one code tidier and
+    validator
+
+VERSION
+    version 0.01
+
+SYNOPSIS
+        use Code::TidyAll;
+
+        my $ct = Code::TidyAll->new(
+            conf_file => '/path/to/conf/file'
+        );
+
+        # or
+
+        my $ct = Code::TidyAll->new(
+            root_dir => '/path/to/root',
+            plugins  => {
+                perltidy => {
+                    select => qr/\.(pl|pm|t)$/,
+                    options => { argv => '-noll -it=2' },
+                },
+                perlcritic => {
+                    select => qr/\.(pl|pm|t)$/,
+                    options => { '-include' => ['layout'], '-severity' => 3, }
+                }
+            }
+        );
+
+        # then...
+
+        $ct->process_files($file1, $file2);
+
+        # or
+
+        $ct->process_all();
+
+DESCRIPTION
+    This is the engine used by tidyall. You can call this API from your own
+    program instead of executing `tidyall'.
+
+CONSTRUCTOR OPTIONS
+    You must either pass `conf_file', or both `plugins' and `root_dir'.
+
+    plugins
+        Specify a hash of plugins, each of which is itself a hash of
+        options. This is equivalent to what would be parsed out of the
+        sections in `tidyall.ini'.
+
+    backup_ttl
+    conf_file
+    data_dir
+    no_backups
+    no_cache
+    plugins
+    root_dir
+    verbose
+        These options are the same as the equivalent `tidyall' command-line
+        options, replacing dashes with underscore (e.g. the `backup-ttl'
+        option becomes `backup_ttl' here).
+
+METHODS
+    process_all
+        Process all files; this implements the `tidyall -a' option.
+
+    process_files (file, ...)
+        Process the specified files.
+
+    find_conf_file (start_dir)
+        Start in the *start_dir* and work upwards, looking for a
+        `tidyall.ini'. Return the pathname if found or throw an error if not
+        found.
+
+SEE ALSO
+    Code::TidyAll
+
+AUTHOR
+    Jonathan Swartz <swartz@pobox.com>
+
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2011 by Jonathan Swartz.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
