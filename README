@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.01
+    version 0.02
 
 SYNOPSIS
         use Code::TidyAll;
@@ -21,10 +21,7 @@ SYNOPSIS
                     select => qr/\.(pl|pm|t)$/,
                     options => { argv => '-noll -it=2' },
                 },
-                perlcritic => {
-                    select => qr/\.(pl|pm|t)$/,
-                    options => { '-include' => ['layout'], '-severity' => 3, }
-                }
+                ...
             }
         );
 
@@ -37,8 +34,10 @@ SYNOPSIS
         $ct->process_all();
 
 DESCRIPTION
-    This is the engine used by tidyall. You can call this API from your own
-    program instead of executing `tidyall'.
+    This is the engine used by tidyall - read that first to get an overview.
+
+    You can call this API from your own program instead of executing
+    `tidyall'.
 
 CONSTRUCTOR OPTIONS
     You must either pass `conf_file', or both `plugins' and `root_dir'.
@@ -48,13 +47,25 @@ CONSTRUCTOR OPTIONS
         options. This is equivalent to what would be parsed out of the
         sections in `tidyall.ini'.
 
+    prefilter
+        A code reference that will be applied to code before processing. It
+        is expected to take the full content as a string in its input, and
+        output the transformed content.
+
+    postfilter
+        A code reference that will be applied to code after processing. It
+        is expected to take the full content as a string in its input, and
+        output the transformed content.
+
     backup_ttl
+    check_only
     conf_file
     data_dir
+    mode
     no_backups
     no_cache
-    plugins
     root_dir
+    quiet
     verbose
         These options are the same as the equivalent `tidyall' command-line
         options, replacing dashes with underscore (e.g. the `backup-ttl'
@@ -65,7 +76,22 @@ METHODS
         Process all files; this implements the `tidyall -a' option.
 
     process_files (file, ...)
-        Process the specified files.
+        Calls process_file on each file. Return a list of
+        Code::TidyAll::Result objects, one for each file.
+
+    process_file (file)
+        Process the file, meaning
+
+        *   Check the cache and return immediately if file has not changed
+
+        *   Apply prefilters, appropriate matching plugins, and postfilters
+
+        *   Print success or failure result to STDOUT, depending on
+            quiet/verbose settings
+
+        *   Write the cache if enabled
+
+        *   Return a Code::TidyAll::Result object
 
     find_conf_file (start_dir)
         Start in the *start_dir* and work upwards, looking for a

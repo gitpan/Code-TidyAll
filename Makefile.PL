@@ -24,7 +24,7 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Code::TidyAll',
   'PREREQ_PM' => {
-    'Capture::Tiny' => '0',
+    'Capture::Tiny' => '0.12',
     'Config::INI::Reader' => '0',
     'Date::Format' => '0',
     'Digest::SHA1' => '0',
@@ -36,11 +36,12 @@ my %WriteMakefileArgs = (
     'File::Zglob' => '0',
     'Hash::MoreUtils' => '0',
     'List::MoreUtils' => '0',
+    'List::Pairwise' => '0',
     'Object::Tiny' => '0',
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.01',
+  'VERSION' => '0.02',
   'test' => {
     'TESTS' => 't/*.t'
   }

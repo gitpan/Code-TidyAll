@@ -1,8 +1,8 @@
 package Code::TidyAll::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.01';
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.02';
 }
-use Code::TidyAll::Util qw(can_load);
+use Perl::Tidy;
 use Hash::MoreUtils qw(slice_exists);
 use strict;
 use warnings;
@@ -10,23 +10,21 @@ use base qw(Code::TidyAll::Plugin);
 
 sub process_source {
     my ( $self, $source ) = @_;
-    my $options            = $self->options;
-    my $perl_tidy_class    = $self->options->{perl_tidy_class} || 'Perl::Tidy';
-    my $perl_tidy_function = $perl_tidy_class . "::perltidy";
-    die "cannot load '$perl_tidy_class'" unless can_load($perl_tidy_class);
+    my $options = $self->options;
 
     # Determine parameters
     #
-    my %params = slice_exists( $self->options, qw(argv prefilter postfilter) );
+    my %params = slice_exists( $self->options, qw(argv) );
 
+    my $errorfile;
     no strict 'refs';
-    &$perl_tidy_function(
+    Perl::Tidy::perltidy(
         %params,
         source      => \$source,
         destination => \my $destination,
-        stderr      => \my $stderr,
+        errorfile   => \$errorfile
     );
-    die $stderr if $stderr;
+    die $errorfile if $errorfile;
     return $destination;
 }
 
@@ -42,7 +40,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
@@ -67,15 +65,6 @@ version 0.01
 =item argv
 
 Arguments to pass to C<perltidy>.
-
-=item perl_tidy_class
-
-Specify a C<Perl::Tidy> subclass to use instead of C<Perl::Tidy>.
-
-=item prefilter, postfilter
-
-Specify a prefilter and/or postfilter coderef. This can only be specified via
-the L<Code::TidyAll|Code::TidyAll> module API.
 
 =back
 

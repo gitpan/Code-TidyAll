@@ -2,6 +2,7 @@
 use Cwd qw(cwd realpath);
 use Getopt::Long;
 use Pod::Usage;
+use Code::TidyAll;
 use Code::TidyAll::Util qw(can_load dirname);
 use Hash::MoreUtils qw(slice_def);
 use strict;
@@ -15,43 +16,46 @@ sub usage {
 }
 
 my ( %params, $help, $all );
-my $class = 'Code::TidyAll';
 
 GetOptions(
-    'backup-ttl=i' => \$params{backup_ttl},
-    'class=s'      => \$class,
-    'conf-file=s'  => \$params{conf_file},
-    'data-dir=s'   => \$params{data_dir},
-    'no-backups'   => \$params{no_backups},
-    'no-cache'     => \$params{no_cache},
-    'root-dir=s'   => \$params{root_dir},
-    'a|all'        => \$all,
-    'h|help'       => \$help,
-    'v|verbose'    => \$params{verbose},
+    'backup-ttl=i'    => \$params{backup_ttl},
+    'check-only=s'    => \$params{check_only},
+    'conf-file=s'     => \$params{conf_file},
+    'data-dir=s'      => \$params{data_dir},
+    'no-backups'      => \$params{no_backups},
+    'no-cache'        => \$params{no_cache},
+    'output-suffix=s' => \$params{output_suffix},
+    'refresh-cache'   => \$params{refresh_cache},
+    'root-dir=s'      => \$params{root_dir},
+    'tidyall-class=s' => \$params{tidyall_class},
+    'a|all'           => \$all,
+    'h|help'          => \$help,
+    'm|mode=s'        => \$params{mode},
+    'q|quiet'         => \$params{quiet},
+    'v|verbose'       => \$params{verbose},
 ) or usage();
 
 Pod::Usage::pod2usage( { verbose => 2 } ) if $help;
-
-die "cannot load '$class'" unless can_load($class);
 
 %params = slice_def( \%params );
 
 $params{conf_file} ||= "$params{root_dir}/tidyall.ini" if ( $params{root_dir} );
 
-my $result;
+my @results;
 if ($all) {
-    $params{conf_file} ||= $class->find_conf_file( cwd() );
-    my $ct = $class->new(%params);
-    $result = $ct->process_all();
+    $params{conf_file} ||= Code::TidyAll->find_conf_file( cwd() );
+    my $ct = Code::TidyAll->new(%params);
+    @results = $ct->process_all();
 }
 else {
     my @files = @ARGV or die "file(s) or -a required";
-    $params{conf_file} ||= $class->find_conf_file( dirname( $files[0] ) );
-    my $ct = $class->new(%params);
-    $result = $ct->process_files(@files);
+    $params{conf_file} ||= Code::TidyAll->find_conf_file( dirname( $files[0] ) );
+    my $ct = Code::TidyAll->new(%params);
+    @results = $ct->process_files(@files);
 }
 
-exit( $result->error_count ? 1 : 0 );
+my $status = ( grep { $_->error } @results ) ? 1 : 0;
+exit($status);
 
 1;
 
@@ -65,22 +69,23 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
     # Create a tidyall.ini at the top of your project
     #
     [PerlTidy]
-    argv = -noll -it=2
     select = **/*.{pl,pm,t}
+    argv = -noll -it=2
 
     [PerlCritic]
-    argv = -severity 3
     select = lib/**/*.pm
     ignore = lib/UtterHack.pm
+    argv = -severity 3
 
-    # Process all files in the current project, look upwards from cwd for tidyall.ini
+    # Process all files in the current project,
+    # look upwards from cwd for tidyall.ini
     #
     % tidyall -a
 
@@ -88,7 +93,8 @@ version 0.01
     #
     % tidyall -a --root-dir /home/joe/project
 
-    # Process one or more specific files, look upwards from the first file for tidyall.ini
+    # Process one or more specific files,
+    # look upwards from the first file for tidyall.ini
     #
     % tidyall file [file...]
 
@@ -116,22 +122,13 @@ Many tidiers are also validators, e.g. C<perltidy> will throw an error on badly
 formed Perl.
 
 To use a tidier or validator with C<tidyall> it must have a corresponding
-plugin, usually under the prefix C<Code::TidyAll::Plugin::>.  This distribution
-comes with plugins for L<perltidy|Code::TidyAll::Plugin::PerlTidy>,
+plugin class, usually under the prefix C<Code::TidyAll::Plugin::>.  This
+distribution comes with plugins for
+L<perltidy|Code::TidyAll::Plugin::PerlTidy>,
 L<perlcritic|Code::TidyAll::Plugin::PerlCritic> and
-L<podtidy|Code::TidyAll::Plugin::PodTidy>.
-
-=head1 OPTIONS
-
- -a, --all        Process all files in the project
- -h, --help       Print help message
- --backup-ttl     When backup files can be purged. Defaults to "1h"
- --class          Code::TidyAll subclass to use. Defaults to "Code::TidyAll"
- --conf-file      Specify conf file explicitly; usually inferred from specified files or cwd
- --data-dir       Contains data like backups and cache. Defaults to root_dir/.tidyall.d
- --no-backup      Don't backup files
- --no-cache       Don't cache last processed times; process all files every time
- --root-dir       Specify root dir explicitly; usually inferred from specified files or cwd
+L<podtidy|Code::TidyAll::Plugin::PodTidy>. See
+L<Code::TidyAll::Plugin|Code::TidyAll::Plugin> for information about creating
+your own plugin.
 
 =head1 USING TIDYALL
 
@@ -150,7 +147,7 @@ depending on how you call it:
 
 =item tidyall file [file...]
 
-C<tidyall> will search upwards from the first I<file> for C<tidyall.ini>.
+C<tidyall> will search upwards from the first file for C<tidyall.ini>.
 
 =item tidyall -a
 
@@ -163,18 +160,19 @@ C<tidyall> will expect to find C<tidyall.ini> in the specified root directory.
 
 =back
 
-=head2 Configuration format
+=head1 CONFIGURATION
 
-The config file is in L<Config::INI|Config::INI> format. Here's a sample:
+The config file (C<tidyall.ini>) is in L<Config::INI|Config::INI> format.
+Here's a sample:
 
     [PerlTidy]
-    argv = -noll -it=2
     select = **/*.{pl,pm,t}
+    argv = -noll -it=2
 
     [PerlCritic]
-    argv = -severity 3
     select = lib/**/*.pm
     ignore = lib/UtterHack.pm
+    argv = -severity 3
 
     [PodTidy]
     select = lib/**/*.{pm,pod}
@@ -205,9 +203,9 @@ Apply C<PodTidy> with default settings to all .pm and .pod files underneath
 
 =item [class]
 
-The header of each configuration section refers to a tidyall I<plugin>. The
-name is automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins
-with a '+', e.g.
+The header of each section refers to a tidyall I<plugin>. The name is
+automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins with a
+'+', e.g.
 
     # Uses plugin Code::TidyAll::Plugin::PerlTidy
     [PerlTidy]
@@ -235,8 +233,19 @@ C<File::Zglob> documentation for more details.
 A C<File::Zglob> pattern, of the same format described above, indicating which
 files to ignore.  This overrides C<select>. e.g.
 
+    # All .pl files under bin, except under bin/tmp
     select = bin/**/*.pl
     ignore = bin/tmp/*.pl
+
+=item modes
+
+An optional list of modes, separated by whitespace, in which this plugin should
+run. e.g.
+
+    modes = editor commit
+
+When a mode is passed to C<tidyall> via C<-m> or C<--mode>, only the plugins
+with that mode will run. If no mode is passed to C<tidyall>, all plugins run.
 
 =item argv
 
@@ -246,6 +255,100 @@ L<podtidy|Code::TidyAll::Plugin::PodTidy>) take this option, which specifies
 arguments to pass to the underlying command-line utility.
 
 =back
+
+=head1 COMMAND-LINE OPTIONS
+
+=over
+
+=item -a, --all        
+
+Process all files. Does a recursive search for all files in the project
+hierarchy, starting at the root, and processes any file that matches at least
+one plugin in the configuration.
+
+=item -h, --help       
+
+Print help message
+
+=item -m, --mode       
+
+Optional mode (e.g. "editor", "commit") indicating a subset of plugins to run. 
+For example, if you pass "-m editor", only plugins with "editor" in their modes
+list will run. If no mode is passed, all plugins run.
+
+=item -q, --quiet      
+
+Suppress output except for errors.
+
+=item -v, --verbose    
+
+Show extra output.
+
+=item --backup-ttl     
+
+Amount of time before backup files can be purged; defaults to "1h". Can be any
+string recognized by L<Time::Duration::Parse|Time::Duration::Parse>.
+
+=item --check-only     
+
+Just check if each file is tidied (i.e. if its tidied version is equal to its
+current version) and consider it an error if not; don't actually modify the
+file. This is used by L<Test::Code::TidyAll|Test::Code::TidyAll>, for example.
+
+=item --conf-file      
+
+Specify config file explicitly. Usually this is inferred from the specified
+file(s) or from the current working directory.
+
+=item --data-dir       
+
+Contains data like backups and cache. Defaults to root_dir/.tidyall.d
+
+=item --no-backups     
+
+Don't backup files before processing.
+
+=item --no-cache       
+
+Don't cache last processed times; process all files every time. See also
+C<--refresh-cache>.
+
+=item --output-suffix  
+
+Suffix to add to a filename before outputting the modified version, e.g.
+".tdy". Default is none, which means overwrite the file.
+
+=item --refresh-cache  
+
+Erase any existing cache info before processing each file, then write new cache
+info. See also C<--no-cache>.
+
+=item --root-dir       
+
+Specify root dir explicitly. Usually this is inferred from the specified files
+or the current working directory.
+
+=item --tidyall-class  
+
+Subclass to use instead of C<Code::TidyAll>.
+
+=back
+
+=head2 Specifying options in configuration
+
+Almost any command-line option can be specified at the top of the config file,
+above the plugin sections. Replace dashes with underscores. e.g.
+
+    backup_ttl = 4h
+    tidyall_class = My::Code::TidyAll
+
+    [PerlTidy]
+    select = **/*.{pl,pm,t}
+    argv = -noll -it=2
+
+    ...
+
+If an option is passed in both places, the command-line takes precedence.
 
 =head1 LAST-PROCESSED CACHE
 
@@ -272,6 +375,16 @@ You can turn off backups with C<--no-backups>.
 
 C<tidyall> will exit with status 1 if any errors occurred while processing
 files, and 0 otherwise.
+
+=head1 KNOWN BUGS
+
+=over
+
+=item *
+
+Does not yet work on Windows
+
+=back
 
 =head1 ACKNOWLEDGEMENTS
 

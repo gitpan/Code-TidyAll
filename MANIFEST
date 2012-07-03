@@ -20,6 +20,7 @@ lib/Code/TidyAll/Test/Plugin/UpperText.pm
 lib/Code/TidyAll/Util.pm
 lib/Code/TidyAll/t/Basic.pm
 lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
+lib/Test/Code/TidyAll.pm
 t/Basic.t
 t/author-tidy-and-critic.t
 tidyall.ini

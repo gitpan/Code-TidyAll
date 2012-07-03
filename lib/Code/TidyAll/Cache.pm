@@ -1,6 +1,6 @@
 package Code::TidyAll::Cache;
 BEGIN {
-  $Code::TidyAll::Cache::VERSION = '0.01';
+  $Code::TidyAll::Cache::VERSION = '0.02';
 }
 use Object::Tiny qw(cache_dir);
 use Digest::SHA1 qw(sha1_hex);
@@ -39,6 +39,13 @@ sub set {
     my $file = $self->path_to_key($key);
     mkpath( dirname($file), 0, 0775 );
     write_file( $file, $value );
+}
+
+sub remove {
+    my ( $self, $key, $value ) = @_;
+
+    my $file = $self->path_to_key($key);
+    unlink($file);
 }
 
 1;

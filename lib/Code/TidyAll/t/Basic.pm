@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Basic;
 BEGIN {
-  $Code::TidyAll::t::Basic::VERSION = '0.01';
+  $Code::TidyAll::t::Basic::VERSION = '0.02';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(dirname mkpath read_file tempdir_simple write_file);
@@ -40,14 +40,15 @@ sub tidy {
         %$options
     );
 
-    my $result;
-    my $output = capture_stdout { $result = $ct->process_all() };
+    my @results;
+    my $output = capture_stdout { @results = $ct->process_all() };
+    my $error_count = grep { $_->error } @results;
     if ( $params{errors} ) {
         like( $output, $params{errors}, "$desc - errors" );
-        ok( $result->error_count > 0, "$desc - error_count > 0" );
+        ok( $error_count > 0, "$desc - error_count > 0" );
     }
     else {
-        is( $result->error_count, 0, "$desc - error_count == 0" );
+        is( $error_count, 0, "$desc - error_count == 0" );
     }
     while ( my ( $path, $content ) = each( %{ $params{dest} } ) ) {
         is( read_file("$root_dir/$path"), $content, "$desc - $path content" );
@@ -68,6 +69,15 @@ sub test_basic : Tests {
         source  => { "foo.txt" => "abc" },
         dest    => { "foo.txt" => "ABC" },
         desc    => 'one file UpperText',
+    );
+    $self->tidy(
+        plugins => {
+            %UpperText, test_plugin('ReverseFoo') => { select => '**/foo*', modes => 'reversals' }
+        },
+        source  => { "foo.txt" => "abc" },
+        dest    => { "foo.txt" => "cba" },
+        desc    => 'one file reversals mode',
+        options => { mode      => 'reversals' },
     );
     $self->tidy(
         plugins => { %UpperText, %ReverseFoo },
@@ -92,6 +102,34 @@ sub test_basic : Tests {
         desc    => 'one file UpperText errors',
         errors  => qr/non-alpha content/
     );
+}
+
+sub test_quiet_and_verbose : Tests {
+    my $self = shift;
+
+    foreach my $mode ( 'normal', 'quiet', 'verbose' ) {
+        foreach my $error ( 0, 1 ) {
+            my $root_dir = $self->create_dir( { "foo.txt" => ( $error ? "123" : "abc" ) } );
+            my $output = capture_stdout {
+                my $ct = Code::TidyAll->new(
+                    plugins  => {%UpperText},
+                    root_dir => $root_dir,
+                    ( $mode eq 'normal' ? () : ( $mode => 1 ) )
+                );
+                $ct->process_files("$root_dir/foo.txt");
+            };
+            if ($error) {
+                like( $output, qr/non-alpha content found/ );
+            }
+            else {
+                is( $output, "[tidied]  foo.txt\n" ) if $mode eq 'normal';
+                is( $output, "" ) if $mode eq 'quiet';
+                like( $output,
+                    qr/constructing Code::TidyAll with these params.*purging old backups.*\[tidied\]  foo\.txt \(\+Code::TidyAll::Test::Plugin::UpperText\)/s
+                ) if $mode eq 'verbose';
+            }
+        }
+    }
 }
 
 sub test_caching_and_backups : Tests {

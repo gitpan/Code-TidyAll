@@ -1,9 +1,9 @@
 package Code::TidyAll::Plugin;
 BEGIN {
-  $Code::TidyAll::Plugin::VERSION = '0.01';
+  $Code::TidyAll::Plugin::VERSION = '0.02';
 }
-use Object::Tiny qw(conf ignore matcher name options root_dir select);
-use Code::TidyAll::Util qw(read_file write_file);
+use Object::Tiny qw(conf ignore name options root_dir select);
+use Code::TidyAll::Util qw(basename read_file tempdir_simple write_file);
 use strict;
 use warnings;
 
@@ -25,16 +25,31 @@ sub new {
     return $self;
 }
 
-sub process_file {
-    my ( $self, $file ) = @_;
-    my $source = read_file($file);
-    my $dest   = $self->process_source($source);
-    write_file( $file, $dest ) if $dest ne $source;
-}
+sub process_source_or_file {
+    my ( $self, $source, $file ) = @_;
 
-sub process_source {
-    my ( $self, $source ) = @_;
-    die sprintf( "plugin '%s' must implement either process_file or process_source", $self->name );
+    if ( $self->can('process_source') ) {
+        return $self->process_source($source);
+    }
+    elsif ( $self->can('process_file') ) {
+        my $tempfile = join( "/", tempdir_simple(), basename($file) );
+        write_file( $tempfile, $source );
+        $self->process_file($tempfile);
+        return read_file($tempfile);
+    }
+    elsif ( $self->can('validate_source') ) {
+        $self->validate_source($source);
+        return $source;
+    }
+    elsif ( $self->can('validate_file') ) {
+        $self->validate_file($file);
+        return $source;
+    }
+    else {
+        die sprintf(
+            "plugin '%s' must implement one of process_file, process_source, validate_file, or validate_source",
+            $self->name );
+    }
 }
 
 sub _build_options {
@@ -45,3 +60,90 @@ sub _build_options {
 }
 
 1;
+
+
+=pod
+
+=head1 NAME
+
+Code::TidyAll::Plugin - Create plugins for tidying or validating code
+
+=head1 VERSION
+
+version 0.02
+
+=head1 SYNOPSIS
+
+To use a tidier or validator with C<tidyall> it must have a corresponding
+plugin class that inherits from this class. This document describes how to
+implement a new plugin.
+
+The easiest way to start is to look at existing plugins, such as
+L<Code::TidyAll::Plugin::PerlTidy|Code::TidyAll::Plugin::PerlTidy> and
+L<Code::TidyAll::Plugin::PerlCritic|Code::TidyAll::Plugin::PerlCritic>.
+
+=head1 NAMING
+
+If you are going to publicly release your plugin, call it
+'Code::TidyAll::Plugin::I<something>' so that users can find it easily and
+refer to it by its short name in configuration.
+
+If it's an internal plugin, you can call it whatever you like and refer to it
+with a plus sign prefix in the config file, e.g.
+
+    [+My::Tidier::Class]
+    select = **/*.{pl,pm,t}
+
+=head1 METHODS
+
+Your class should define I<one and only one> of these methods. The first two
+methods are for tidiers (which actually modify code); the second two are for
+validators (which simply check code for errors). C<tidyall> can be a bit more
+efficient with the latter, e.g. avoid a file copy.
+
+=over
+
+=item process_source ($source)
+
+Receives source code as a string; returns the processed string, or dies with
+error.
+
+=item process_file ($file)
+
+Receives filename; processes the file in place, or dies with error. Note that
+the file will be a temporary copy of the user's file with the same basename;
+your changes will only propagate back if there was no error reported from any
+plugin.
+
+=item validate_source ($source)
+
+Receives source code as a string; dies with error if invalid. Return value will
+be ignored.
+
+=item validate_file ($file)
+
+Receives filename; validates file and dies with error if invalid. Should not
+modify file!
+
+=back
+
+=head1 SEE ALSO
+
+L<Code::TidyAll|Code::TidyAll>
+
+=head1 AUTHOR
+
+Jonathan Swartz <swartz@pobox.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Jonathan Swartz.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
+
+__END__
+

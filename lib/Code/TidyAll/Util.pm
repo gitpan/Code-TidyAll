@@ -1,6 +1,6 @@
 package Code::TidyAll::Util;
 BEGIN {
-  $Code::TidyAll::Util::VERSION = '0.01';
+  $Code::TidyAll::Util::VERSION = '0.02';
 }
 use Data::Dumper;
 use File::Basename;
