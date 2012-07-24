@@ -1,6 +1,6 @@
 package Test::Code::TidyAll;
 BEGIN {
-  $Test::Code::TidyAll::VERSION = '0.02';
+  $Test::Code::TidyAll::VERSION = '0.03';
 }
 use IPC::System::Simple qw(run);
 use Code::TidyAll;
@@ -16,8 +16,8 @@ our @EXPORT    = @EXPORT_OK;
 
 sub tidyall_ok {
     my $conf_file = Code::TidyAll->find_conf_file(".");
-    my $ct        = Code::TidyAll->new( check_only => 1, conf_file => $conf_file, @_ );
-    my @files     = sort keys( %{ $ct->matched_files } );
+    my $ct    = Code::TidyAll->new( check_only => 1, conf_file => $conf_file, mode => 'test', @_ );
+    my @files = sort keys( %{ $ct->matched_files } );
     $test->plan( tests => scalar(@files) );
     foreach my $file (@files) {
         my $desc   = $ct->_small_path($file);
@@ -45,7 +45,7 @@ tidyall
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -64,6 +64,8 @@ would change the contents of the file. Does not actually modify any files.
 By default, looks for config file C<tidyall.ini> in the current directory and
 parent directories, which is generally the right place if you are running
 L<prove|prove>.
+
+Passes mode = "test" by default; see L<modes|tidyall/MODES>.
 
 C<tidyall_ok> is exported by default. Any options will be passed along to the
 L<Code::TidyAll|Code::TidyAll> constructor. For example, if you don't want to

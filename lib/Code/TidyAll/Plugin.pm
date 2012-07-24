@@ -1,55 +1,76 @@
 package Code::TidyAll::Plugin;
 BEGIN {
-  $Code::TidyAll::Plugin::VERSION = '0.02';
+  $Code::TidyAll::Plugin::VERSION = '0.03';
 }
-use Object::Tiny qw(conf ignore name options root_dir select);
-use Code::TidyAll::Util qw(basename read_file tempdir_simple write_file);
-use strict;
-use warnings;
+use Code::TidyAll::Util qw(basename read_file write_file);
+use Code::TidyAll::Util::Zglob qw(zglob_to_regex);
+use Scalar::Util qw(weaken);
+use Moo;
 
-sub new {
-    my $class = shift;
-    my $self  = $class->SUPER::new(@_);
-    die "conf required" unless $self->{conf};
-    die "name required" unless $self->{name};
+# External
+has 'conf'    => ( is => 'ro', required => 1 );
+has 'ignore'  => ( is => 'lazy' );
+has 'name'    => ( is => 'ro', required => 1 );
+has 'select'  => ( is => 'lazy' );
+has 'tidyall' => ( is => 'ro', required => 1, weak_ref => 1 );
 
-    my $name = $self->{name};
-    $self->{select} = $self->{conf}->{select}
-      or die "select required for '$name'";
-    die "select for '$name' should not begin with /" if substr( $self->{select}, 0, 1 ) eq '/';
-    $self->{ignore} = $self->{conf}->{ignore};
-    die "ignore for '$name' should not begin with /"
-      if defined( $self->{ignore} ) && substr( $self->{ignore}, 0, 1 ) eq '/';
-    $self->{options} = $self->_build_options();
+# Internal
+has 'options' => ( is => 'lazy', init_arg => undef );
 
-    return $self;
+sub _build_select {
+    my $self = shift;
+    my $path = $self->conf->{select};
+    die sprintf( "select is required for '%s'", $self->name ) unless defined($path);
+    die sprintf( "select for '%s' should not begin with /", $self->name )
+      if ( substr( $path, 0, 1 ) eq '/' );
+    return $path;
+}
+
+sub _build_ignore {
+    my $self = shift;
+    my $path = $self->conf->{ignore};
+    die sprintf( "select for '%s' should not begin with /", $self->name )
+      if ( defined($path) && substr( $path, 0, 1 ) eq '/' );
+    return $path;
+}
+
+# No-ops by default; may be overridden in subclass
+sub preprocess_source {
+    return $_[1];
+}
+
+sub postprocess_source {
+    return $_[1];
 }
 
 sub process_source_or_file {
-    my ( $self, $source, $file ) = @_;
+    my ( $self, $source, $basename ) = @_;
 
-    if ( $self->can('process_source') ) {
-        return $self->process_source($source);
+    if ( $self->can('transform_source') ) {
+        $source = $self->transform_source($source);
     }
-    elsif ( $self->can('process_file') ) {
-        my $tempfile = join( "/", tempdir_simple(), basename($file) );
-        write_file( $tempfile, $source );
-        $self->process_file($tempfile);
-        return read_file($tempfile);
+    if ( $self->can('transform_file') ) {
+        my $tempfile = $self->_write_temp_file( $basename, $source );
+        $self->transform_file($tempfile);
+        $source = read_file($tempfile);
     }
-    elsif ( $self->can('validate_source') ) {
+    if ( $self->can('validate_source') ) {
         $self->validate_source($source);
-        return $source;
     }
-    elsif ( $self->can('validate_file') ) {
-        $self->validate_file($file);
-        return $source;
+    if ( $self->can('validate_file') ) {
+        my $tempfile = $self->_write_temp_file( $basename, $source );
+        $self->validate_file($tempfile);
     }
-    else {
-        die sprintf(
-            "plugin '%s' must implement one of process_file, process_source, validate_file, or validate_source",
-            $self->name );
-    }
+
+    return $source;
+}
+
+sub _write_temp_file {
+    my ( $self, $basename, $source ) = @_;
+
+    my $tempfile = join( "/", $self->tidyall->_tempdir(), $basename );
+    write_file( $tempfile, $source );
+    return $tempfile;
 }
 
 sub _build_options {
@@ -57,6 +78,13 @@ sub _build_options {
     my %options = %{ $self->{conf} };
     delete( @options{qw(select ignore)} );
     return \%options;
+}
+
+sub matches_path {
+    my ( $self, $path ) = @_;
+    $self->{select_regex} ||= zglob_to_regex( $self->select );
+    $self->{ignore_regex} ||= ( $self->ignore ? zglob_to_regex( $self->ignore ) : qr/(?!)/ );
+    return $path =~ $self->{select_regex} && $path !~ $self->{ignore_regex};
 }
 
 1;
@@ -70,7 +98,7 @@ Code::TidyAll::Plugin - Create plugins for tidying or validating code
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -96,21 +124,24 @@ with a plus sign prefix in the config file, e.g.
 
 =head1 METHODS
 
-Your class should define I<one and only one> of these methods. The first two
-methods are for tidiers (which actually modify code); the second two are for
-validators (which simply check code for errors). C<tidyall> can be a bit more
-efficient with the latter, e.g. avoid a file copy.
+Your plugin may define one or more of these methods. They are all no-ops by
+default.
 
 =over
 
-=item process_source ($source)
+=item preprocess_source ($source)
 
 Receives source code as a string; returns the processed string, or dies with
+error. This runs on all plugins I<before> any of the other methods.
+
+=item transform_source ($source)
+
+Receives source code as a string; returns the transformed string, or dies with
 error.
 
-=item process_file ($file)
+=item transform_file ($file)
 
-Receives filename; processes the file in place, or dies with error. Note that
+Receives filename; transforms the file in place, or dies with error. Note that
 the file will be a temporary copy of the user's file with the same basename;
 your changes will only propagate back if there was no error reported from any
 plugin.
@@ -124,6 +155,11 @@ be ignored.
 
 Receives filename; validates file and dies with error if invalid. Should not
 modify file!
+
+=item postprocess_source ($source)
+
+Receives source code as a string; returns the processed string, or dies with
+error. This runs on all plugins I<after> any of the other methods.
 
 =back
 

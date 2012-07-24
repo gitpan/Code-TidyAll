@@ -15,7 +15,7 @@ sub usage {
     Pod::Usage::pod2usage( { verbose => 1 } );
 }
 
-my ( %params, $help, $all );
+my ( %params, $help, $all, $inc_dirs );
 
 GetOptions(
     'backup-ttl=i'    => \$params{backup_ttl},
@@ -33,9 +33,12 @@ GetOptions(
     'm|mode=s'        => \$params{mode},
     'q|quiet'         => \$params{quiet},
     'v|verbose'       => \$params{verbose},
+    'I'               => \$inc_dirs,
 ) or usage();
 
 Pod::Usage::pod2usage( { verbose => 2 } ) if $help;
+
+unshift( @INC, split( /\s*,\s*/, $inc_dirs ) ) if defined($inc_dirs);
 
 %params = slice_def( \%params );
 
@@ -43,14 +46,14 @@ $params{conf_file} ||= "$params{root_dir}/tidyall.ini" if ( $params{root_dir} );
 
 my @results;
 if ($all) {
-    $params{conf_file} ||= Code::TidyAll->find_conf_file( cwd() );
-    my $ct = Code::TidyAll->new(%params);
+    my $conf_file ||= Code::TidyAll->find_conf_file( cwd() );
+    my $ct = Code::TidyAll->new_from_conf_file( $conf_file, %params );
     @results = $ct->process_all();
 }
 else {
     my @files = @ARGV or die "file(s) or -a required";
-    $params{conf_file} ||= Code::TidyAll->find_conf_file( dirname( $files[0] ) );
-    my $ct = Code::TidyAll->new(%params);
+    my $conf_file ||= Code::TidyAll->find_conf_file( dirname( $files[0] ) );
+    my $ct = Code::TidyAll->new_from_conf_file( $conf_file, %params );
     @results = $ct->process_files(@files);
 }
 
@@ -69,7 +72,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -145,16 +148,16 @@ depending on how you call it:
 
 =over
 
-=item tidyall file [file...]
+=item C<< tidyall file [file...] >>
 
 C<tidyall> will search upwards from the first file for C<tidyall.ini>.
 
-=item tidyall -a
+=item C<< tidyall -a >>
 
 C<tidyall> will search upwards from the current working directory for
 C<tidyall.ini>.
 
-=item tidyall -a --root-dir dir
+=item C<< tidyall -a --root-dir dir >>
 
 C<tidyall> will expect to find C<tidyall.ini> in the specified root directory.
 
@@ -188,11 +191,11 @@ Apply C<PerlTidy> with settings "-noll -it=2" to all *.pl, *.pm, and *.t files.
 =item *
 
 Apply C<PerlCritic> with severity 3 to all Perl modules somewhere underneath
-"lib/", except for C<lib/UtterHack.pm>.
+"lib/", except for "lib/UtterHack.pm".
 
 =item *
 
-Apply C<PodTidy> with default settings to all .pm and .pod files underneath
+Apply C<PodTidy> with default settings to all *.pm and *.pod files underneath
 "lib/".
 
 =back
@@ -215,7 +218,8 @@ automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins with a
 
 =item select
 
-A L<File::Zglob|File::Zglob> pattern indicating which files to select, e.g.
+A required L<File::Zglob|File::Zglob> pattern indicating which files to select,
+e.g.
 
     # All .pl and .pm files somewhere under bin, lib and t
     select = {bin,lib,t}/**/*.p[lm]
@@ -224,28 +228,36 @@ A L<File::Zglob|File::Zglob> pattern indicating which files to select, e.g.
     select = **/*.txt
 
 The pattern is relative to the root directory and should have no leading slash.
- All standard glob characters (C<*>, C<?>, C<[]>, C<{}>) will work; in
-addition, C<**> can be used to represent zero or more directories. See
-C<File::Zglob> documentation for more details.
+All standard glob characters (C<*>, C<?>, C<[]>, C<{}>) will work; in addition,
+C<**> can be used to represent zero or more directories. See
+L<File::Zglob|File::Zglob> documentation for more details.
 
 =item ignore
 
-A C<File::Zglob> pattern, of the same format described above, indicating which
-files to ignore.  This overrides C<select>. e.g.
+A L<File::Zglob|File::Zglob> pattern, of the same format described above,
+indicating which files to ignore.  This overrides C<select>. e.g.
 
     # All .pl files under bin, except under bin/tmp
     select = bin/**/*.pl
     ignore = bin/tmp/*.pl
 
-=item modes
+=item only_modes
 
-An optional list of modes, separated by whitespace, in which this plugin should
-run. e.g.
+A list of modes, separated by whitespace. e.g.
 
-    modes = editor commit
+    only_modes = tests cli
 
-When a mode is passed to C<tidyall> via C<-m> or C<--mode>, only the plugins
-with that mode will run. If no mode is passed to C<tidyall>, all plugins run.
+The plugin will I<only> run if one of these modes is passed to C<tidyall> via
+C<-m> or C<--mode>.
+
+=item except_modes
+
+A list of modes, separated by whitespace. e.g.
+
+    except_modes = commit editor
+
+The plugin will I<not> run if one of these modes is passed to C<tidyall> via
+C<-m> or C<--mode>.
 
 =item argv
 
@@ -272,9 +284,8 @@ Print help message
 
 =item -m, --mode       
 
-Optional mode (e.g. "editor", "commit") indicating a subset of plugins to run. 
-For example, if you pass "-m editor", only plugins with "editor" in their modes
-list will run. If no mode is passed, all plugins run.
+Optional mode that can affect which plugins run. Defaults to 'cli'. See
+L</MODES>.
 
 =item -q, --quiet      
 
@@ -283,6 +294,11 @@ Suppress output except for errors.
 =item -v, --verbose    
 
 Show extra output.
+
+=item -I
+
+Add libraries to @INC, as Perl's -I. Useful if --tidyall-class or plugins are
+in an alternate lib directory.
 
 =item --backup-ttl     
 
@@ -350,13 +366,66 @@ above the plugin sections. Replace dashes with underscores. e.g.
 
 If an option is passed in both places, the command-line takes precedence.
 
+=head1 MODES
+
+You can use tidyall in a number of different contexts, and you may not want to
+run all plugins in all of them.
+
+You can pass a mode to tidyall via C<-m> or C<--mode>, and then specify that
+certain plugins should only be run in certain modes (via L</only_modes>) or
+should be run in all but certain modes (via L</except_modes>).
+
+Examples of modes:
+
+=over
+
+=item *
+
+C<cli> - when invoking tidyall explicitly from the command-line with no mode
+specified
+
+=item *
+
+C<editor> - when invoking from an editor
+
+=item *
+
+C<commit> - when using a commit hook like
+L<Code::TidyAll::SVN::Precommit|Code::TidyAll::SVN::Precommit>
+
+=item *
+
+C<test> - when using L<Test::Code::TidyAll|Test::Code::TidyAll>
+
+=back
+
+Now since L<perlcritic|Code::TidyAll::Plugin::PerlCritic> is a bit
+time-consuming, you might only want to run it during tests and explicit
+command-line invocation:
+
+    [PerlCritic]
+    select = lib/**/*.pm
+    only_modes = tests cli
+    ...
+
+Or you could specify that it be run in all modes I<except> the editor:
+
+    [PerlCritic]
+    select = lib/**/*.pm
+    except_modes = editor
+    ...
+
+If you specify neither C<only_modes> nor C<except_modes> for a plugin, then it
+will always run.
+
 =head1 LAST-PROCESSED CACHE
 
 C<tidyall> keeps track of each file's signature after it was last processed. On
 subsequent runs, it will only process a file if its signature has changed. The
 cache is kept in files under the data dir.
 
-You can turn off this behavior with C<--no-cache>.
+You can force a refresh of the cache with C<--refresh-cache>, or turn off the
+behavior entirely with C<--no-cache>.
 
 =head1 BACKUPS
 
@@ -375,6 +444,12 @@ You can turn off backups with C<--no-backups>.
 
 C<tidyall> will exit with status 1 if any errors occurred while processing
 files, and 0 otherwise.
+
+=head1 SUBVERSION PRECOMMIT
+
+L<Code::TidyAll::SVN::Precommit|Code::TidyAll::SVN::Precommit> implements a
+subversion precommit hook that checks if all files are tidied and valid
+according to C<tidyall>, and rejects the commit if not.
 
 =head1 KNOWN BUGS
 

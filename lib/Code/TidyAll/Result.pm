@@ -1,11 +1,13 @@
 package Code::TidyAll::Result;
 BEGIN {
-  $Code::TidyAll::Result::VERSION = '0.02';
+  $Code::TidyAll::Result::VERSION = '0.03';
 }
-use strict;
-use warnings;
+use Moo;
 
-use Object::Tiny qw(msg state);
+has 'msg'          => ( is => 'ro' );
+has 'new_contents' => ( is => 'ro' );
+has 'path'         => ( is => 'ro' );
+has 'state'        => ( is => 'ro' );
 
 sub error { return $_[0]->state eq 'error' }
 sub ok { return $_[0]->state ne 'error' }
@@ -18,11 +20,11 @@ sub ok { return $_[0]->state ne 'error' }
 
 =head1 NAME
 
-Code::TidyAll::Result - Result returned from Code::TidyAll::process_file
+Code::TidyAll::Result - Result returned from processing a file/source
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 
@@ -35,12 +37,17 @@ version 0.02
 =head1 DESCRIPTION
 
 Represents the result of
-L<Code::TidyAll::process_file|Code::TidyAll/process_file>. A list of these is
+L<Code::TidyAll::process_file|Code::TidyAll/process_file> and
+L<Code::TidyAll::process_file|Code::TidyAll/process_source>. A list of these is
 returned from L<Code::TidyAll::process_files|Code::TidyAll/process_files>.
 
 =head1 METHODS
 
 =over
+
+=item path
+
+The path that was processed, relative to the root (e.g. "lib/Foo.pm")
 
 =item state
 
@@ -59,6 +66,14 @@ A string, one of
 =item C<tidied> - File was successfully checked and changed
 
 =back
+
+=item new_contents
+
+Contains the new contents if state is 'tidied'
+
+=item msg
+
+Contains the error message if state is 'error'
 
 =item error
 

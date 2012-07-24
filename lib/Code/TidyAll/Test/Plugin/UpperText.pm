@@ -1,12 +1,12 @@
 package Code::TidyAll::Test::Plugin::UpperText;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.02';
+  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.03';
 }
 use base qw(Code::TidyAll::Plugin);
 use strict;
 use warnings;
 
-sub process_source {
+sub transform_source {
     my ( $self, $source ) = @_;
     if ( $source =~ /^[A-Z]*$/i ) {
         return uc($source);

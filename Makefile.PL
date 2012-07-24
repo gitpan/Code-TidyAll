@@ -37,11 +37,13 @@ my %WriteMakefileArgs = (
     'Hash::MoreUtils' => '0',
     'List::MoreUtils' => '0',
     'List::Pairwise' => '0',
-    'Object::Tiny' => '0',
+    'Log::Any' => '0',
+    'Moo' => '0.0091010',
+    'Scalar::Util' => '0',
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.02',
+  'VERSION' => '0.03',
   'test' => {
     'TESTS' => 't/*.t'
   }

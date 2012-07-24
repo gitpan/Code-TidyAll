@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PodTidy::VERSION = '0.02';
+  $Code::TidyAll::Plugin::PodTidy::VERSION = '0.03';
 }
 use Capture::Tiny qw(capture_merged);
 use Hash::MoreUtils qw(slice_exists);
@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use base qw(Code::TidyAll::Plugin);
 
-sub process_file {
+sub transform_file {
     my ( $self, $file ) = @_;
     my $options = $self->options;
 
@@ -38,7 +38,7 @@ Code::TidyAll::Plugin::PodTidy - use podtidy with tidyall
 
 =head1 VERSION
 
-version 0.02
+version 0.03
 
 =head1 SYNOPSIS
 

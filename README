@@ -3,13 +3,14 @@ NAME
     validator
 
 VERSION
-    version 0.02
+    version 0.03
 
 SYNOPSIS
         use Code::TidyAll;
 
-        my $ct = Code::TidyAll->new(
-            conf_file => '/path/to/conf/file'
+        my $ct = Code::TidyAll->new_from_conf_file(
+            '/path/to/conf/file',
+            ...
         );
 
         # or
@@ -39,33 +40,36 @@ DESCRIPTION
     You can call this API from your own program instead of executing
     `tidyall'.
 
-CONSTRUCTOR OPTIONS
-    You must either pass `conf_file', or both `plugins' and `root_dir'.
+CONSTRUCTION
+  Construtor methods
+    new (%params)
+        The regular constructor. Must pass at least *plugins* and
+        *root_dir*.
 
+    new_with_conf_file ($conf_file, %params)
+        Takes a conf file path, followed optionally by a set of key/value
+        parameters. Reads parameters out of the conf file and combines them
+        with the passed parameters (the latter take precedence), and calls
+        the regular constructor.
+
+        If the conf file or params defines *tidyall_class*, then that class
+        is constructed instead of `Code::TidyAll'.
+
+  Constructor parameters
     plugins
         Specify a hash of plugins, each of which is itself a hash of
         options. This is equivalent to what would be parsed out of the
         sections in `tidyall.ini'.
 
-    prefilter
-        A code reference that will be applied to code before processing. It
-        is expected to take the full content as a string in its input, and
-        output the transformed content.
-
-    postfilter
-        A code reference that will be applied to code after processing. It
-        is expected to take the full content as a string in its input, and
-        output the transformed content.
-
     backup_ttl
     check_only
-    conf_file
     data_dir
     mode
     no_backups
     no_cache
-    root_dir
+    output_suffix
     quiet
+    root_dir
     verbose
         These options are the same as the equivalent `tidyall' command-line
         options, replacing dashes with underscore (e.g. the `backup-ttl'
@@ -76,15 +80,15 @@ METHODS
         Process all files; this implements the `tidyall -a' option.
 
     process_files (file, ...)
-        Calls process_file on each file. Return a list of
+        Call process_file on each file. Return a list of
         Code::TidyAll::Result objects, one for each file.
 
     process_file (file)
-        Process the file, meaning
+        Process the *file*, meaning
 
         *   Check the cache and return immediately if file has not changed
 
-        *   Apply prefilters, appropriate matching plugins, and postfilters
+        *   Apply appropriate matching plugins
 
         *   Print success or failure result to STDOUT, depending on
             quiet/verbose settings
@@ -93,10 +97,21 @@ METHODS
 
         *   Return a Code::TidyAll::Result object
 
+    process_source (source, path)
+        Same as process_file, but process the *source* string instead of a
+        file. You must still pass the relative *path* from the root as the
+        second argument, so that we know which plugins to apply. Return a
+        Code::TidyAll::Result object.
+
+    plugins_for_path (path)
+        Given a relative *path* from the root, return a list of
+        Code::TidyAll::Plugin objects that apply to it, or an empty list if
+        no plugins apply.
+
     find_conf_file (start_dir)
-        Start in the *start_dir* and work upwards, looking for a
-        `tidyall.ini'. Return the pathname if found or throw an error if not
-        found.
+        Class method. Start in the *start_dir* and work upwards, looking for
+        a `tidyall.ini'. Return the pathname if found or throw an error if
+        not found.
 
 SEE ALSO
     Code::TidyAll
