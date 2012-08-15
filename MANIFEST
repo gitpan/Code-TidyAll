@@ -9,9 +9,12 @@ bin/tidyall
 lib/Code/TidyAll.pm
 lib/Code/TidyAll/Cache.pm
 lib/Code/TidyAll/Plugin.pm
+lib/Code/TidyAll/Plugin/PerlCritic.pm
+lib/Code/TidyAll/Plugin/PerlTidy.pm
 lib/Code/TidyAll/Plugin/PodTidy.pm
 lib/Code/TidyAll/Result.pm
 lib/Code/TidyAll/SVN/Precommit.pm
+lib/Code/TidyAll/SVN/Util.pm
 lib/Code/TidyAll/Test/Class.pm
 lib/Code/TidyAll/Test/Plugin/RepeatFoo.pm
 lib/Code/TidyAll/Test/Plugin/ReverseFoo.pm

@@ -1,11 +1,13 @@
 # This is a copy of Text::Glob, modified to support "**/"
 #
 package Code::TidyAll::Util::Zglob;
+BEGIN {
+  $Code::TidyAll::Util::Zglob::VERSION = '0.04';
+}
 use strict;
 use Exporter;
-use vars qw/$VERSION @ISA @EXPORT_OK
+use vars qw/@ISA @EXPORT_OK
   $strict_leading_dot $strict_wildcard_slash/;
-$VERSION   = '0.08';
 @ISA       = 'Exporter';
 @EXPORT_OK = qw( zglob_to_regex );
 

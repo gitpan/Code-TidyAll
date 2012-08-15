@@ -1,6 +1,6 @@
 package Code::TidyAll::SVN::Precommit;
 BEGIN {
-  $Code::TidyAll::SVN::Precommit::VERSION = '0.03';
+  $Code::TidyAll::SVN::Precommit::VERSION = '0.04';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -11,13 +11,14 @@ use SVN::Look;
 use Try::Tiny;
 
 # Public
-has 'conf_file'        => ( is => 'ro', default => sub { "tidyall.ini" } );
-has 'extra_conf_files' => ( is => 'ro', default => sub { [] } );
-has 'reject_on_error'  => ( is => 'ro' );
-has 'repos'            => ( is => 'ro', default => sub { $ARGV[0] } );
-has 'tidyall_class'    => ( is => 'ro', default => sub { 'Code::TidyAll' } );
-has 'tidyall_options'  => ( is => 'ro', default => sub { {} } );
-has 'txn'              => ( is => 'ro', default => sub { $ARGV[1] } );
+has 'conf_file'                => ( is => 'ro', default => sub { "tidyall.ini" } );
+has 'emergency_comment_prefix' => ( is => 'ro', default => sub { "NO TIDYALL" } );
+has 'extra_conf_files'         => ( is => 'ro', default => sub { [] } );
+has 'reject_on_error'          => ( is => 'ro' );
+has 'repos'                    => ( is => 'ro', default => sub { $ARGV[0] } );
+has 'tidyall_class'            => ( is => 'ro', default => sub { 'Code::TidyAll' } );
+has 'tidyall_options'          => ( is => 'ro', default => sub { {} } );
+has 'txn'                      => ( is => 'ro', default => sub { $ARGV[1] } );
 
 # Private
 has 'cat_file_cache' => ( init_arg => undef, is => 'ro', default => sub { {} } );
@@ -34,7 +35,16 @@ sub check {
     my $fail_msg;
 
     try {
-        my $self = $class->new(%params);
+        my $self    = $class->new(%params);
+        my $revlook = $self->revlook;
+
+        # Skip if emergency comment prefix is present
+        #
+        if ( my $prefix = $self->emergency_comment_prefix ) {
+            if ( index( $revlook->log_msg, $prefix ) == 0 ) {
+                return;
+            }
+        }
 
         my @files = ( $self->revlook->added(), $self->revlook->updated() );
         $log->info("----------------------------");
@@ -159,7 +169,7 @@ to be tidyall'd
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -201,13 +211,22 @@ commit is rejected and the reason(s) are output to the client. e.g.
       at /tmp/Code-TidyAll-0e6K/Driver.pm line 2
       [TestingAndDebugging::RequireUseStrict]
 
+In an emergency the hook can be bypassed by prefixing the comment with "NO
+TIDYALL", e.g.
+
+    % svn commit -m "NO TIDYALL - this is an emergency!" CHI.pm CHI/Driver.pm 
+    Sending        CHI/Driver.pm
+    Sending        CHI.pm
+    Transmitting file data .                                                              
+    Committed revision 7562.  
+
 The configuration file (C<tidyall.ini> by default) must be checked into svn.
 For each file, the hook will look upwards from the file's repo location and use
 the first configuration file it finds.
 
 By default, if C<tidyall.ini> cannot be found, or if a runtime error occurs, a
 warning is logged (see L</LOGGING> below) but the commit is allowed to proceed.
-This is so that unexpected problems do not prevent a team from committing code.
+ This is so that unexpected problems do not prevent valid commits.
 
 Passes mode = "commit" by default; see L<modes|tidyall/MODES>.
 
@@ -218,6 +237,15 @@ Key/value parameters:
 =item conf_file
 
 Name of configuration file, defaults to C<tidyall.ini>
+
+=item emergency_comment_prefix
+
+Commit prefix that will cause this hook to be bypassed. Defaults to "NO
+TIDYALL". e.g.
+
+    svn commit -m "NO TIDYALL - must get fix to production!"
+
+Set to a false value (e.g. blank or undefined) to disable bypassing.
 
 =item extra_conf_files
 
@@ -240,7 +268,7 @@ Subclass to use instead of L<Code::TidyAll|Code::TidyAll>
 
 =item tidyall_options
 
-Options to pass to the L<Code::TidyAll|Code::TidyAll> constructor
+Hashref of options to pass to the L<Code::TidyAll|Code::TidyAll> constructor
 
 =item txn
 
@@ -263,6 +291,12 @@ adapters|Log::Any::Adapter>.
 
 Having a log file is especially useful with precommit hooks since there is no
 way for the hook to send back output on a successful commit.
+
+=head1 ACKNOWLEDGEMENTS
+
+Thanks to Alexander Simakov, author of
+L<perlcritic-checker|http://search.cpan.org/~xdr/perlcritic-checker-1.2.6/>,
+for some of the ideas here such as emergency_comment_prefix.
 
 =head1 SEE ALSO
 

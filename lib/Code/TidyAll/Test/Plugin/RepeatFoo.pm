@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::RepeatFoo;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::RepeatFoo::VERSION = '0.03';
+  $Code::TidyAll::Test::Plugin::RepeatFoo::VERSION = '0.04';
 }
 use Code::TidyAll::Util qw(read_file write_file);
 use base qw(Code::TidyAll::Plugin);

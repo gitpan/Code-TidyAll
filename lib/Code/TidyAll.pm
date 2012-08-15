@@ -1,6 +1,6 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.03';
+  $Code::TidyAll::VERSION = '0.04';
 }
 use Cwd qw(realpath);
 use Config::INI::Reader;
@@ -39,7 +39,6 @@ has 'backup_dir'       => ( is => 'lazy', init_arg => undef, trigger => 1 );
 has 'backup_ttl_secs'  => ( is => 'lazy', init_arg => undef );
 has 'base_sig'         => ( is => 'lazy', init_arg => undef );
 has 'cache'            => ( is => 'lazy', init_arg => undef );
-has 'conf_file'        => ( is => 'ro', init_arg => undef );
 has 'plugin_objects'   => ( is => 'lazy', init_arg => undef );
 has 'plugins_for_mode' => ( is => 'lazy', init_arg => undef );
 
@@ -167,7 +166,7 @@ sub _plugin_conf_matches_mode {
 sub process_all {
     my $self = shift;
 
-    return $self->process_files( $self->_find_matched_files );
+    return $self->process_files( $self->find_matched_files );
 }
 
 sub process_files {
@@ -350,7 +349,7 @@ sub _find_conf_file_upward {
     }
 }
 
-sub _find_matched_files {
+sub find_matched_files {
     my ($self) = @_;
 
     my @matched_files;
@@ -429,7 +428,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 

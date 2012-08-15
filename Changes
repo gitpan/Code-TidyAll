@@ -2,6 +2,16 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.04  Aug 14, 2012
+
+* Fixes
+  - Add back missing plugins
+  - Fix --check-only flag
+
+* Improvements
+  - Add --svn flag
+  - Add emergency_comment_prefix ("NO TIDYALL") to svn precommit hook
+
 0.03  Jul 24, 2012
 
 * Improvements

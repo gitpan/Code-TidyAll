@@ -15,12 +15,12 @@ sub usage {
     Pod::Usage::pod2usage( { verbose => 1 } );
 }
 
-my ( %params, $help, $all, $inc_dirs );
+my ( %params, $all_files, $conf_file, $git_files, $help, $inc_dirs, $svn_files );
 
 GetOptions(
     'backup-ttl=i'    => \$params{backup_ttl},
-    'check-only=s'    => \$params{check_only},
-    'conf-file=s'     => \$params{conf_file},
+    'check-only'      => \$params{check_only},
+    'conf-file=s'     => \$conf_file,
     'data-dir=s'      => \$params{data_dir},
     'no-backups'      => \$params{no_backups},
     'no-cache'        => \$params{no_cache},
@@ -28,9 +28,11 @@ GetOptions(
     'refresh-cache'   => \$params{refresh_cache},
     'root-dir=s'      => \$params{root_dir},
     'tidyall-class=s' => \$params{tidyall_class},
-    'a|all'           => \$all,
+    'a|all'           => \$all_files,
+    'g|git'           => \$git_files,
     'h|help'          => \$help,
     'm|mode=s'        => \$params{mode},
+    's|svn'           => \$svn_files,
     'q|quiet'         => \$params{quiet},
     'v|verbose'       => \$params{verbose},
     'I'               => \$inc_dirs,
@@ -42,19 +44,35 @@ unshift( @INC, split( /\s*,\s*/, $inc_dirs ) ) if defined($inc_dirs);
 
 %params = slice_def( \%params );
 
-$params{conf_file} ||= "$params{root_dir}/tidyall.ini" if ( $params{root_dir} );
+$conf_file = "$params{root_dir}/tidyall.ini" if $params{root_dir};
 
-my @results;
-if ($all) {
-    my $conf_file ||= Code::TidyAll->find_conf_file( cwd() );
-    my $ct = Code::TidyAll->new_from_conf_file( $conf_file, %params );
-    @results = $ct->process_all();
+my $tidyall_class = $params{tidyall_class} || 'Code::TidyAll';
+
+my (@results);
+if ( $all_files || $svn_files || $git_files ) {
+    my $conf_file = $tidyall_class->find_conf_file( cwd() );
+    my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
+    my @files;
+    if ($all_files) {
+        @files = $ct->find_matched_files;
+    }
+    elsif ($svn_files) {
+        require Code::TidyAll::SVN::Util;
+        @files = Code::TidyAll::SVN::Util::svn_uncommitted_files( $ct->root_dir );
+    }
+    elsif ($git_files) {
+        require Code::TidyAll::Git::Util;
+        @files = Code::TidyAll::Git::Util::git_uncommitted_files( $ct->root_dir );
+    }
+    @results = $ct->process_files(@files);
+}
+elsif ( my @files = @ARGV ) {
+    my $conf_file = $tidyall_class->find_conf_file( dirname( $files[0] ) );
+    my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
+    @results = $ct->process_files(@files);
 }
 else {
-    my @files = @ARGV or die "file(s) or -a required";
-    my $conf_file ||= Code::TidyAll->find_conf_file( dirname( $files[0] ) );
-    my $ct = Code::TidyAll->new_from_conf_file( $conf_file, %params );
-    @results = $ct->process_files(@files);
+    die "must pass -a/--all, -s/--svn, -g/--git, or filename(s)";
 }
 
 my $status = ( grep { $_->error } @results ) ? 1 : 0;
@@ -72,7 +90,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.03
+version 0.04
 
 =head1 SYNOPSIS
 
@@ -286,6 +304,10 @@ Print help message
 
 Optional mode that can affect which plugins run. Defaults to 'cli'. See
 L</MODES>.
+
+=item -s, --svn
+
+Process all added or modified files in the current svn working directory.
 
 =item -q, --quiet      
 

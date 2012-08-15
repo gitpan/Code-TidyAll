@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::UpperText;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.03';
+  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.04';
 }
 use base qw(Code::TidyAll::Plugin);
 use strict;
