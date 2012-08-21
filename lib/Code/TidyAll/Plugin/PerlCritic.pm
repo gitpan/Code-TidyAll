@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlCritic;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.04';
+  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.05';
 }
 use Perl::Critic::Command qw();
 use Capture::Tiny qw(capture_merged);
@@ -36,7 +36,7 @@ Code::TidyAll::Plugin::PerlCritic - use perlcritic with tidyall
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 

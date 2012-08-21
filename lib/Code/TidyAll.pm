@@ -1,6 +1,6 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.04';
+  $Code::TidyAll::VERSION = '0.05';
 }
 use Cwd qw(realpath);
 use Config::INI::Reader;
@@ -109,6 +109,7 @@ sub BUILD {
 sub new_from_conf_file {
     my ( $class, $conf_file, %params ) = @_;
 
+    die "no such file '$conf_file'" unless -f $conf_file;
     my $conf_params = $class->_read_conf_file($conf_file);
     my $main_params = delete( $conf_params->{'_'} ) || {};
     %params = (
@@ -211,7 +212,7 @@ sub process_source {
     if ( !@plugins ) {
         $self->msg( "[no plugins apply%s] %s",
             $self->mode ? " for mode '" . $self->mode . "'" : "", $path )
-          unless $self->quiet;
+          if $self->verbose;
         return Code::TidyAll::Result->new( path => $path, state => 'no_match' );
     }
 
@@ -428,7 +429,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.04
+version 0.05
 
 =head1 SYNOPSIS
 

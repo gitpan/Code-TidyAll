@@ -6,6 +6,7 @@ META.json
 META.yml
 Makefile.PL
 bin/tidyall
+etc/editors/tidyall.el
 lib/Code/TidyAll.pm
 lib/Code/TidyAll/Cache.pm
 lib/Code/TidyAll/Plugin.pm
