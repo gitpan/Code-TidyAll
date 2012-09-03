@@ -1,6 +1,6 @@
 package Code::TidyAll::SVN::Precommit;
 BEGIN {
-  $Code::TidyAll::SVN::Precommit::VERSION = '0.05';
+  $Code::TidyAll::SVN::Precommit::VERSION = '0.06';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -16,7 +16,7 @@ has 'emergency_comment_prefix' => ( is => 'ro', default => sub { "NO TIDYALL" } 
 has 'extra_conf_files'         => ( is => 'ro', default => sub { [] } );
 has 'reject_on_error'          => ( is => 'ro' );
 has 'repos'                    => ( is => 'ro', default => sub { $ARGV[0] } );
-has 'tidyall_class'            => ( is => 'ro', default => sub { 'Code::TidyAll' } );
+has 'tidyall_class'            => ( is => 'ro', default => sub { "Code::TidyAll" } );
 has 'tidyall_options'          => ( is => 'ro', default => sub { {} } );
 has 'txn'                      => ( is => 'ro', default => sub { $ARGV[1] } );
 
@@ -169,7 +169,7 @@ to be tidyall'd
 
 =head1 VERSION
 
-version 0.05
+version 0.06
 
 =head1 SYNOPSIS
 

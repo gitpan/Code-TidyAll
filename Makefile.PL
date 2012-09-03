@@ -34,6 +34,7 @@ my %WriteMakefileArgs = (
     'File::Slurp' => '0',
     'File::Temp' => '0',
     'File::Zglob' => '0',
+    'Guard' => '0',
     'Hash::MoreUtils' => '0',
     'List::MoreUtils' => '0',
     'List::Pairwise' => '0',
@@ -43,7 +44,7 @@ my %WriteMakefileArgs = (
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.05',
+  'VERSION' => '0.06',
   'test' => {
     'TESTS' => 't/*.t'
   }

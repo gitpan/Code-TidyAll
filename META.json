@@ -40,6 +40,7 @@
             "File::Slurp" : 0,
             "File::Temp" : 0,
             "File::Zglob" : 0,
+            "Guard" : 0,
             "Hash::MoreUtils" : 0,
             "List::MoreUtils" : 0,
             "List::Pairwise" : 0,
@@ -68,6 +69,6 @@
          "web" : "https://github.com/jonswar/perl-code-tidyall"
       }
    },
-   "version" : "0.05"
+   "version" : "0.06"
 }
 

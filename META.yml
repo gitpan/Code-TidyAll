@@ -30,6 +30,7 @@ requires:
   File::Slurp: 0
   File::Temp: 0
   File::Zglob: 0
+  Guard: 0
   Hash::MoreUtils: 0
   List::MoreUtils: 0
   List::Pairwise: 0
@@ -41,4 +42,4 @@ requires:
 resources:
   bugtracker: http://rt.cpan.org/NoAuth/Bugs.html?Dist=Code-TidyAll
   repository: git://github.com/jonswar/perl-code-tidyall.git
-version: 0.05
+version: 0.06

@@ -2,6 +2,14 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.06  Sep 3, 2012
+
+* Improvements
+  - Add --git flag and git precommit hook (Code::TidyAll::Git::Precommit)
+
+* Fixes
+  - Omit directories from svn_uncommitted_files (--svn)
+
 0.05  Aug 21, 2012
 
 * Improvements

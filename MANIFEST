@@ -9,6 +9,8 @@ bin/tidyall
 etc/editors/tidyall.el
 lib/Code/TidyAll.pm
 lib/Code/TidyAll/Cache.pm
+lib/Code/TidyAll/Git/Precommit.pm
+lib/Code/TidyAll/Git/Util.pm
 lib/Code/TidyAll/Plugin.pm
 lib/Code/TidyAll/Plugin/PerlCritic.pm
 lib/Code/TidyAll/Plugin/PerlTidy.pm
@@ -23,11 +25,13 @@ lib/Code/TidyAll/Test/Plugin/UpperText.pm
 lib/Code/TidyAll/Util.pm
 lib/Code/TidyAll/Util/Zglob.pm
 lib/Code/TidyAll/t/Basic.pm
+lib/Code/TidyAll/t/Git.pm
 lib/Code/TidyAll/t/SVN.pm
 lib/Code/TidyAll/t/Zglob.pm
 lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
 lib/Test/Code/TidyAll.pm
 t/Basic.t
 t/Zglob.t
+t/author-Git.t
 t/author-SVN.t
 t/author-tidy-and-critic.t
