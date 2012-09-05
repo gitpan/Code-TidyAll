@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.06';
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.07';
 }
 use Perl::Tidy;
 use Hash::MoreUtils qw(slice_exists);
@@ -40,7 +40,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

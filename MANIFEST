@@ -10,6 +10,7 @@ etc/editors/tidyall.el
 lib/Code/TidyAll.pm
 lib/Code/TidyAll/Cache.pm
 lib/Code/TidyAll/Git/Precommit.pm
+lib/Code/TidyAll/Git/Prereceive.pm
 lib/Code/TidyAll/Git/Util.pm
 lib/Code/TidyAll/Plugin.pm
 lib/Code/TidyAll/Plugin/PerlCritic.pm

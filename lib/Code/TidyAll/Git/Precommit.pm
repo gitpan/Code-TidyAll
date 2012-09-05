@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Precommit;
 BEGIN {
-  $Code::TidyAll::Git::Precommit::VERSION = '0.06';
+  $Code::TidyAll::Git::Precommit::VERSION = '0.07';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -15,6 +15,7 @@ use Try::Tiny;
 
 # Public
 has 'conf_file'       => ( is => 'ro', default => sub { "tidyall.ini" } );
+has 'git_path'        => ( is => 'ro', default => sub { 'git' } );
 has 'no_stash'        => ( is => 'ro' );
 has 'reject_on_error' => ( is => 'ro' );
 has 'tidyall_class'   => ( is => 'ro', default => sub { "Code::TidyAll" } );
@@ -30,19 +31,19 @@ sub check {
         my $tidyall_class = $self->tidyall_class;
 
         # Find conf file at git root
-        my $root_dir = capturex( "git", "rev-parse", "--show-toplevel" );
+        my $root_dir = capturex( $self->git_path, "rev-parse", "--show-toplevel" );
         chomp($root_dir);
         my $conf_file = join( "/", $root_dir, $self->conf_file );
         die "could not find conf file '$conf_file'" unless -f $conf_file;
 
         # Store the stash, and restore it upon exiting this scope
         unless ( $self->no_stash ) {
-            run("git stash -q --keep-index");
-            scope_guard { run("git stash pop -q") };
+            run( $self->git_path, "stash", "-q", "--keep-index" );
+            scope_guard { run( $self->git_path, "stash", "pop", "-q" ) };
         }
 
         # Gather file paths to be committed
-        my $output = capturex( "git", "status", "--porcelain" );
+        my $output = capturex( $self->git_path, "status", "--porcelain" );
         my @files = ( $output =~ /^[MA]\s+(.*)/gm );
 
         my $tidyall = $tidyall_class->new_from_conf_file(
@@ -56,21 +57,15 @@ sub check {
 
         if ( my @error_results = grep { $_->error } @results ) {
             my $error_count = scalar(@error_results);
-            $fail_msg = join(
-                "\n",
-                sprintf(
-                    "%d file%s did not pass tidyall check",
-                    $error_count, $error_count > 1 ? "s" : ""
-                ),
-                map { join( ": ", $_->path, $_->msg ) } @error_results
-            );
+            $fail_msg = sprintf( "%d file%s did not pass tidyall check\n",
+                $error_count, $error_count > 1 ? "s" : "" );
         }
     }
     catch {
         my $error = $_;
         die "Error during pre-commit hook (use --no-verify to skip hook):\n$error";
     };
-    die $fail_msg if $fail_msg;
+    die "$fail_msg\n" if $fail_msg;
 }
 
 1;
@@ -81,12 +76,12 @@ sub check {
 
 =head1 NAME
 
-Code::TidyAll::Git::Precommit - Git precommit hook that requires files to be
+Code::TidyAll::Git::Precommit - Git pre-commit hook that requires files to be
 tidyall'd
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 
@@ -104,10 +99,10 @@ version 0.06
 This module implements a L<Git pre-commit
 hook|http://git-scm.com/book/en/Customizing-Git-Git-Hooks> that checks if all
 files are tidied and valid according to L<tidyall|tidyall>, and rejects the
-commit if not.
+commit if not. Files/commits are never modified by this hook.
 
-Files are not modified by this hook. If you want to actually tidy files before
-commit,
+See also L<Code::TidyAll::Git::Prereceive|Code::TidyAll::Git::Prereceive>,
+which validates pushes to a shared repo.
 
 =head1 METHODS
 
@@ -151,6 +146,11 @@ Key/value parameters:
 
 =over
 
+=item git_path
+
+Path to git to use in commands, e.g. '/usr/bin/git' or '/usr/local/bin/git'. By
+default, just uses 'git', which will search the user's PATH.
+
 =item no_stash
 
 Don't attempt to stash changes not in the index. This means the hook will
@@ -167,6 +167,42 @@ Hashref of options to pass to the L<Code::TidyAll|Code::TidyAll> constructor
 =back
 
 =back
+
+=head1 USING AND (NOT) ENFORCING THIS HOOK
+
+This hook must be placed manually in each copy of the repo - there is no way to
+automatically distribute or enforce it. However, you can make things easier on
+yourself or your developers as follows:
+
+=over
+
+=item *
+
+Create a directory called C<git> at the top of your repo (note no dot prefix)
+
+=item *
+
+Commit your pre-commit script in C<git/hooks/pre-commit>
+
+=item *
+
+Add a setup script in C<git/setup.pl> containing
+
+    #!/bin/bash
+    ln -s git/hooks/pre-commit .git/hooks/pre-commit
+
+=item *
+
+Run C<git/setup.pl> (or tell your developers to run it) once for each new clone
+of the repo
+
+=back
+
+More information on pre-commit hooks and the impossibility of enforcing them
+L<here|http://stackoverflow.com/questions/3703159/git-remote-shared-pre-commit-hook>.
+
+See also L<Code::TidyAll::Git::Prereceive|Code::TidyAll::Git::Prereceive>,
+which enforces tidyall on pushes to a remote shared repository.
 
 =head1 SEE ALSO
 

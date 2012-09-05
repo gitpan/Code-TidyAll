@@ -1,6 +1,6 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.06';
+  $Code::TidyAll::VERSION = '0.07';
 }
 use Cwd qw(realpath);
 use Config::INI::Reader;
@@ -241,7 +241,7 @@ sub process_source {
         undef $was_tidied;
     }
 
-    unless ( $self->quiet ) {
+    if ( !$self->quiet || $error ) {
         my $status = $was_tidied ? "[tidied]  " : "[checked] ";
         my $plugin_names =
           $self->verbose ? sprintf( " (%s)", join( ", ", map { $_->name } @plugins ) ) : "";
@@ -429,7 +429,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.06
+version 0.07
 
 =head1 SYNOPSIS
 

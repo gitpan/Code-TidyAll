@@ -2,10 +2,18 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.07  Sep 5, 2012
+
+* Improvements
+  - Add git pre-receive hook (Code::TidyAll::Git::Prereceive)
+
+* Fixes
+  - Show file paths with errors in quiet mode
+
 0.06  Sep 3, 2012
 
 * Improvements
-  - Add --git flag and git precommit hook (Code::TidyAll::Git::Precommit)
+  - Add --git flag and git pre-commit hook (Code::TidyAll::Git::Precommit)
 
 * Fixes
   - Omit directories from svn_uncommitted_files (--svn)
