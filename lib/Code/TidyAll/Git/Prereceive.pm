@@ -1,12 +1,11 @@
 package Code::TidyAll::Git::Prereceive;
 BEGIN {
-  $Code::TidyAll::Git::Prereceive::VERSION = '0.07';
+  $Code::TidyAll::Git::Prereceive::VERSION = '0.08';
 }
 use Code::TidyAll;
 use Code::TidyAll::Util qw(realpath tempdir_simple write_file);
 use IPC::System::Simple qw(capturex run);
 use Moo;
-use SVN::Look;
 use Try::Tiny;
 
 # Public
@@ -110,7 +109,7 @@ tidyall'd
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

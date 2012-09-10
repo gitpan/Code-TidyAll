@@ -1,6 +1,6 @@
 package Test::Code::TidyAll;
 BEGIN {
-  $Test::Code::TidyAll::VERSION = '0.07';
+  $Test::Code::TidyAll::VERSION = '0.08';
 }
 use IPC::System::Simple qw(run);
 use Code::TidyAll;
@@ -26,7 +26,7 @@ sub tidyall_ok {
             $test->ok( 1, $desc );
         }
         else {
-            $test->diag( $result->msg );
+            $test->diag( $result->error );
             $test->ok( 0, $desc );
         }
     }
@@ -45,7 +45,7 @@ tidyall
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

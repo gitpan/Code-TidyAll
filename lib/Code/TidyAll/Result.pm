@@ -1,15 +1,14 @@
 package Code::TidyAll::Result;
 BEGIN {
-  $Code::TidyAll::Result::VERSION = '0.07';
+  $Code::TidyAll::Result::VERSION = '0.08';
 }
 use Moo;
 
-has 'msg'          => ( is => 'ro' );
+has 'error'        => ( is => 'ro' );
 has 'new_contents' => ( is => 'ro' );
 has 'path'         => ( is => 'ro' );
 has 'state'        => ( is => 'ro' );
 
-sub error { return $_[0]->state eq 'error' }
 sub ok { return $_[0]->state ne 'error' }
 
 1;
@@ -24,7 +23,7 @@ Code::TidyAll::Result - Result returned from processing a file/source
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -71,13 +70,9 @@ A string, one of
 
 Contains the new contents if state is 'tidied'
 
-=item msg
-
-Contains the error message if state is 'error'
-
 =item error
 
-Returns true iff state is 'error'
+Contains the error message if state is 'error'
 
 =item ok
 

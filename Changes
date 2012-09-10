@@ -2,6 +2,20 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.08  Sep 10, 2012
+
+* Improvements
+  - Add js-beautify plugin (javascript tidier)
+  - Add jshint plugin (javascript validator)
+  - Add podchecker plugin
+  - Add -p/--pipe flag to read from STDIN and write to STDOUT
+  - Allow tidyall.el to work in narrowed regions
+  - Make plugins into Moo classes, pass configuration as attributes
+
+* Fixes
+  - Remove unused SVN::Look - perl-code-tidyall/pull/1 (Pedro Melo)
+  - Filter just files from git status in Code::TidyAll::Git::Precommit (Pedro Melo)
+
 0.07  Sep 5, 2012
 
 * Improvements
@@ -13,7 +27,7 @@ Revision history for Code-TidyAll
 0.06  Sep 3, 2012
 
 * Improvements
-  - Add --git flag and git pre-commit hook (Code::TidyAll::Git::Precommit)
+  - Add -g/--git flag and git pre-commit hook (Code::TidyAll::Git::Precommit)
 
 * Fixes
   - Omit directories from svn_uncommitted_files (--svn)
@@ -31,7 +45,7 @@ Revision history for Code-TidyAll
   - Fix --check-only flag
 
 * Improvements
-  - Add --svn flag
+  - Add -s/--svn flag
   - Add emergency_comment_prefix ("NO TIDYALL") to svn precommit hook
 
 0.03  Jul 24, 2012

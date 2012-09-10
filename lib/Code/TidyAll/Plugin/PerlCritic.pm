@@ -1,24 +1,16 @@
 package Code::TidyAll::Plugin::PerlCritic;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.07';
+  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.08';
 }
 use Perl::Critic::Command qw();
 use Capture::Tiny qw(capture_merged);
-use strict;
-use warnings;
-use base qw(Code::TidyAll::Plugin);
+use Moo;
+extends 'Code::TidyAll::Plugin';
 
 sub validate_file {
     my ( $self, $file ) = @_;
-    my $options = $self->options;
 
-    # Determine arguments
-    #
-    my @argv = split( /\s/, $options->{argv} || '' );
-    push( @argv, $file );
-
-    # Run perlcritic
-    #
+    my @argv = ( split( /\s/, $self->argv ), $file );
     local @ARGV = @argv;
     my $output = capture_merged { Perl::Critic::Command::run() };
     die "$output\n" if $output !~ /^.* source OK\n/;
@@ -36,31 +28,42 @@ Code::TidyAll::Plugin::PerlCritic - use perlcritic with tidyall
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
-   # In tidyall.ini:
+   In tidyall.ini:
 
-   # Configure in-line
-   #
+   ; Configure in-line
+   ;
    [PerlCritic]
    argv = --severity 5 --exclude=nowarnings
    select = lib/**/*.pm
 
-   # or refer to a .perlcriticrc in the same directory
-   #
+   ; or refer to a .perlcriticrc in the same directory
+   ;
    [PerlCritic]
    argv = --profile $ROOT/.perlcriticrc
    select = lib/**/*.pm
 
-=head1 OPTIONS
+=head1 DESCRIPTION
+
+Runs L<perlcritic|perlcritic>, a Perl validator, and dies if any problems were
+found.
+
+=head1 INSTALLATION
+
+Install perlcritic from CPAN.
+
+    cpanm perlcritic
+
+=head1 CONFIGURATION
 
 =over
 
 =item argv
 
-Arguments to pass to perlcritic.
+Arguments to pass to perlcritic
 
 =back
 

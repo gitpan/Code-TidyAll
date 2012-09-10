@@ -1,6 +1,6 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.07';
+  $Code::TidyAll::VERSION = '0.08';
 }
 use Cwd qw(realpath);
 use Config::INI::Reader;
@@ -12,7 +12,6 @@ use Date::Format;
 use Digest::SHA1 qw(sha1_hex);
 use File::Find qw(find);
 use File::Zglob;
-use List::Pairwise qw(grepp mapp);
 use List::MoreUtils qw(uniq);
 use Moo;
 use Time::Duration::Parse qw(parse_duration);
@@ -74,7 +73,10 @@ sub _build_plugins_for_mode {
     my $self    = shift;
     my $plugins = $self->plugins;
     if ( my $mode = $self->mode ) {
-        $plugins = { grepp { $self->_plugin_conf_matches_mode( $b, $mode ) } %{ $self->plugins } };
+        $plugins = {
+            map { ( $_, $plugins->{$_} ) }
+            grep { $self->_plugin_conf_matches_mode( $plugins->{$_}, $mode ) } keys(%$plugins)
+        };
     }
     return $plugins;
 }
@@ -146,9 +148,9 @@ sub _load_plugin {
     };
 
     return $class_name->new(
-        conf    => $plugin_conf,
         name    => $plugin_name,
-        tidyall => $self
+        tidyall => $self,
+        %$plugin_conf
     );
 }
 
@@ -250,7 +252,7 @@ sub process_source {
 
     if ($error) {
         $self->msg( "%s", $error );
-        return Code::TidyAll::Result->new( path => $path, state => 'error', msg => $error );
+        return Code::TidyAll::Result->new( path => $path, state => 'error', error => $error );
     }
     elsif ($was_tidied) {
         return Code::TidyAll::Result->new(
@@ -429,7 +431,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -446,8 +448,8 @@ version 0.07
         root_dir => '/path/to/root',
         plugins  => {
             perltidy => {
-                select => qr/\.(pl|pm|t)$/,
-                options => { argv => '-noll -it=2' },
+                select => 'lib/**/*.(pl|pm)',
+                argv => '-noll -it=2',
             },
             ...
         }
@@ -470,7 +472,7 @@ You can call this API from your own program instead of executing C<tidyall>.
 
 =head1 CONSTRUCTION
 
-=head2 Construtor methods
+=head2 Constructor methods
 
 =over
 

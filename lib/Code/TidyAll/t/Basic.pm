@@ -1,11 +1,11 @@
 package Code::TidyAll::t::Basic;
 BEGIN {
-  $Code::TidyAll::t::Basic::VERSION = '0.07';
+  $Code::TidyAll::t::Basic::VERSION = '0.08';
 }
 use Cwd qw(realpath);
-use Code::TidyAll::Util qw(dirname mkpath read_file tempdir_simple write_file);
+use Code::TidyAll::Util qw(dirname mkpath pushd read_file tempdir_simple write_file);
 use Code::TidyAll;
-use Capture::Tiny qw(capture_stdout);
+use Capture::Tiny qw(capture capture_stdout);
 use File::Find qw(find);
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';
 
@@ -294,6 +294,15 @@ sub test_cli : Tests {
     };
     is( read_file("$root_dir/subdir/foo.txt"),  "BYEBYEBYE", "foo.txt tidied" );
     is( read_file("$root_dir/subdir/foo2.txt"), "bye",       "foo2.txt not tidied" );
+
+    # Test -p / --pipe
+    #
+    my ( $stdout, $stderr ) = capture {
+        open( my $fh, "|-", "$^X", "bin/tidyall", "-p", "$root_dir/does_not_exist/foo.txt" );
+        print $fh "echo";
+    };
+    is( $stdout, "ECHOECHOECHO", "pipe: stdin tidied" );
+    unlike( $stderr, qr/\S/, "pipe: no stderr" );
 }
 
 $conf1 = '

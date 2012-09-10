@@ -1,25 +1,18 @@
 package Code::TidyAll::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.07';
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.08';
 }
 use Perl::Tidy;
-use Hash::MoreUtils qw(slice_exists);
-use strict;
-use warnings;
-use base qw(Code::TidyAll::Plugin);
+use Moo;
+extends 'Code::TidyAll::Plugin';
 
 sub transform_source {
     my ( $self, $source ) = @_;
-    my $options = $self->options;
-
-    # Determine parameters
-    #
-    my %params = slice_exists( $self->options, qw(argv) );
 
     my $errorfile;
     no strict 'refs';
     Perl::Tidy::perltidy(
-        %params,
+        argv        => $self->argv,
         source      => \$source,
         destination => \my $destination,
         errorfile   => \$errorfile
@@ -40,31 +33,41 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
    # In tidyall.ini:
 
-   # Configure in-line
-   #
-   [Perltidy]
+   ; Configure in-line
+   ;
+   [PerlTidy]
    argv = --noll
    select = lib/**/*.pm
 
-   # or refer to a .perltidyrc in the same directory
-   #
-   [Perltidy]
+   ; or refer to a .perltidyrc in the same directory
+   ;
+   [PerlTidy]
    argv = --profile=$ROOT/.perltidyrc
    select = lib/**/*.pm
 
-=head1 OPTIONS
+=head1 DESCRIPTION
+
+Runs L<perltidy|perltidy>, a Perl tidier.
+
+=head1 INSTALLATION
+
+Install perltidy from CPAN.
+
+    cpanm perltidy
+
+=head1 CONFIGURATION
 
 =over
 
 =item argv
 
-Arguments to pass to C<perltidy>.
+Arguments to pass to perltidy
 
 =back
 

@@ -1,10 +1,9 @@
 package Code::TidyAll::Test::Plugin::UpperText;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.07';
+  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.08';
 }
-use base qw(Code::TidyAll::Plugin);
-use strict;
-use warnings;
+use Moo;
+extends 'Code::TidyAll::Plugin';
 
 sub transform_source {
     my ( $self, $source ) = @_;

@@ -35,16 +35,14 @@ my %WriteMakefileArgs = (
     'File::Temp' => '0',
     'File::Zglob' => '0',
     'Guard' => '0',
-    'Hash::MoreUtils' => '0',
     'List::MoreUtils' => '0',
-    'List::Pairwise' => '0',
     'Log::Any' => '0',
     'Moo' => '0.0091010',
     'Scalar::Util' => '0',
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.07',
+  'VERSION' => '0.08',
   'test' => {
     'TESTS' => 't/*.t'
   }

@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Precommit;
 BEGIN {
-  $Code::TidyAll::Git::Precommit::VERSION = '0.07';
+  $Code::TidyAll::Git::Precommit::VERSION = '0.08';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -10,7 +10,6 @@ use Guard;
 use Log::Any qw($log);
 use IPC::System::Simple qw(capturex run);
 use Moo;
-use SVN::Look;
 use Try::Tiny;
 
 # Public
@@ -44,7 +43,7 @@ sub check {
 
         # Gather file paths to be committed
         my $output = capturex( $self->git_path, "status", "--porcelain" );
-        my @files = ( $output =~ /^[MA]\s+(.*)/gm );
+        my @files = grep { -f } ( $output =~ /^[MA]\s+(.*)/gm );
 
         my $tidyall = $tidyall_class->new_from_conf_file(
             $conf_file,
@@ -81,7 +80,7 @@ tidyall'd
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 

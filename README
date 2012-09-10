@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.07
+    version 0.08
 
 SYNOPSIS
         use Code::TidyAll;
@@ -19,8 +19,8 @@ SYNOPSIS
             root_dir => '/path/to/root',
             plugins  => {
                 perltidy => {
-                    select => qr/\.(pl|pm|t)$/,
-                    options => { argv => '-noll -it=2' },
+                    select => 'lib/**/*.(pl|pm)',
+                    argv => '-noll -it=2',
                 },
                 ...
             }
@@ -41,7 +41,7 @@ DESCRIPTION
     `tidyall'.
 
 CONSTRUCTION
-  Construtor methods
+  Constructor methods
     new (%params)
         The regular constructor. Must pass at least *plugins* and
         *root_dir*.

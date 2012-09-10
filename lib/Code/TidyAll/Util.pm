@@ -1,6 +1,6 @@
 package Code::TidyAll::Util;
 BEGIN {
-  $Code::TidyAll::Util::VERSION = '0.07';
+  $Code::TidyAll::Util::VERSION = '0.08';
 }
 use Cwd qw(realpath);
 use Data::Dumper;
@@ -17,7 +17,7 @@ use warnings;
 use base qw(Exporter);
 
 our @EXPORT_OK =
-  qw(abs2rel basename can_load dirname dump_one_line mkpath pushd read_dir read_file realpath rel2abs tempdir_simple uniq write_file );
+  qw(abs2rel basename can_load dirname dump_one_line mkpath pushd read_dir read_file realpath rel2abs tempdir_simple trim uniq write_file );
 
 sub can_load {
 
@@ -60,6 +60,12 @@ sub pushd {
     my $cwd = realpath();
     chdir($dir);
     return guard { chdir($cwd) };
+}
+
+sub trim {
+    my ($str) = @_;
+    for ($str) { s/^\s+//; s/\s+$// }
+    return $str;
 }
 
 1;

@@ -10,12 +10,12 @@ use warnings;
 
 sub usage {
     my $msg = shift;
-    print "$msg\n" if $msg;
+    print STDERR "$msg\n" if $msg;
     require Pod::Usage;
-    Pod::Usage::pod2usage( { verbose => 1 } );
+    Pod::Usage::pod2usage( { verbose => 1, output => \*STDERR } );
 }
 
-my ( %params, $all_files, $conf_file, $git_files, $help, $inc_dirs, $svn_files );
+my ( %params, $all_files, $conf_file, $git_files, $help, $inc_dirs, $pipe, $svn_files );
 
 GetOptions(
     'backup-ttl=i'    => \$params{backup_ttl},
@@ -32,6 +32,7 @@ GetOptions(
     'g|git'           => \$git_files,
     'h|help'          => \$help,
     'm|mode=s'        => \$params{mode},
+    'p|pipe=s'        => \$pipe,
     's|svn'           => \$svn_files,
     'q|quiet'         => \$params{quiet},
     'v|verbose'       => \$params{verbose},
@@ -44,14 +45,18 @@ unshift( @INC, split( /\s*,\s*/, $inc_dirs ) ) if defined($inc_dirs);
 
 %params = slice_def( \%params );
 
-$conf_file = "$params{root_dir}/tidyall.ini" if $params{root_dir};
+$conf_file = "$params{root_dir}/tidyall.ini"
+  if $params{root_dir} && !$conf_file && -f "$params{root_dir}/tidyall.ini";
 
 my $tidyall_class = $params{tidyall_class} || 'Code::TidyAll';
 
 my (@results);
-if ( $all_files || $svn_files || $git_files ) {
-    my $conf_file = $tidyall_class->find_conf_file( cwd() );
+if ( ( $all_files || $svn_files || $git_files ) ) {
+    die "cannot use filename(s) with -a/--all, -s/--svn, or -g/--git"
+      if @ARGV;
+    $conf_file ||= $tidyall_class->find_conf_file( cwd() );
     my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
+
     my @files;
     if ($all_files) {
         @files = $ct->find_matched_files;
@@ -66,17 +71,49 @@ if ( $all_files || $svn_files || $git_files ) {
     }
     @results = $ct->process_files(@files);
 }
+elsif ($pipe) {
+    handle_pipe($pipe);
+}
 elsif ( my @files = @ARGV ) {
-    my $conf_file = $tidyall_class->find_conf_file( dirname( $files[0] ) );
+    $conf_file ||= $tidyall_class->find_conf_file( dirname( $files[0] ) );
     my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
     @results = $ct->process_files(@files);
 }
 else {
-    die "must pass -a/--all, -s/--svn, -g/--git, or filename(s)";
+    die "must pass -a/--all, -s/--svn, -g/--git, -p/--pipe, or filename(s)";
 }
 
 my $status = ( grep { $_->error } @results ) ? 1 : 0;
 exit($status);
+
+sub handle_pipe {
+    my ($pipe_filename) = @_;
+
+    $params{$_} = 1 for ( 'no_backups', 'no_cache', 'quiet' );
+    $params{$_} = 0 for ('verbose');
+
+    $conf_file ||= $tidyall_class->find_conf_file( dirname($pipe_filename) );
+    my $ct       = $tidyall_class->new_from_conf_file( $conf_file, %params );
+    my $root_dir = $ct->root_dir;
+    my $source   = do { local $/; <STDIN> };
+    my $result   = $ct->process_source( $source, $ct->_small_path($pipe_filename) );
+    if ( my $error = $result->error ) {
+        print STDERR $error;
+        exit(1);
+    }
+    elsif ( $result->state eq 'no_match' ) {
+        print STDERR "No match for '$pipe'";
+        exit(1);
+    }
+    elsif ( $result->state eq 'checked' ) {
+        print $source;
+        exit(0);
+    }
+    else {
+        print $result->new_contents;
+        exit(0);
+    }
+}
 
 1;
 
@@ -90,7 +127,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.07
+version 0.08
 
 =head1 SYNOPSIS
 
@@ -133,23 +170,36 @@ changed since they were last processed.
 
 A I<tidier> transforms a file so as to improve its appearance without changing
 its semantics. Examples include L<perltidy>, L<podtidy> and
-L<htmltidy|HTML::Tidy>.
+L<js-beautify|https://npmjs.org/package/js-beautify>.
 
 A I<validator> analyzes a file for some definition of correctness. Examples
-include L<perlcritic>, L<podchecker> and
-L<xmllint|http://xmlsoft.org/xmllint.html>.
+include L<perlcritic>, L<podchecker> and L<jshint|http://www.jshint.com/>.
 
 Many tidiers are also validators, e.g. C<perltidy> will throw an error on badly
 formed Perl.
 
 To use a tidier or validator with C<tidyall> it must have a corresponding
 plugin class, usually under the prefix C<Code::TidyAll::Plugin::>.  This
-distribution comes with plugins for
-L<perltidy|Code::TidyAll::Plugin::PerlTidy>,
-L<perlcritic|Code::TidyAll::Plugin::PerlCritic> and
-L<podtidy|Code::TidyAll::Plugin::PodTidy>. See
-L<Code::TidyAll::Plugin|Code::TidyAll::Plugin> for information about creating
-your own plugin.
+distribution comes with plugins for:
+
+=over
+
+=item L<perlcritic|Code::TidyAll::Plugin::PerlCritic>
+
+=item L<perltidy|Code::TidyAll::Plugin::PerlTidy>
+
+=item L<podchecker|Code::TidyAll::Plugin::PodChecker>
+
+=item L<podtidy|Code::TidyAll::Plugin::PodTidy>
+
+=item L<jsbeautify|Code::TidyAll::Plugin::JSBeautify>
+
+=item L<jshint|Code::TidyAll::Plugin::JSHint>
+
+=back
+
+See L<Code::TidyAll::Plugin|Code::TidyAll::Plugin> for information about
+creating your own plugin.
 
 =head1 USING TIDYALL
 
@@ -170,7 +220,11 @@ depending on how you call it:
 
 C<tidyall> will search upwards from the first file for C<tidyall.ini>.
 
-=item C<< tidyall -a >>
+=item C<< tidyall -p/--pipe file >>
+
+C<tidyall> will search upwards from the specified file for C<tidyall.ini>.
+
+=item C<< tidyall -a/--all >> or C<< tidyall -s/--svn >> or C<< tidyall -g/--git >>
 
 C<tidyall> will search upwards from the current working directory for
 C<tidyall.ini>.
@@ -308,6 +362,25 @@ Print help message
 
 Optional mode that can affect which plugins run. Defaults to 'cli'. See
 L</MODES>.
+
+=item -p, --pipe
+
+Read content from STDIN, and write either the tidied content to STDOUT or the
+error message to STDERR.
+
+When specifying this option you must specify exactly one filename, relative or
+absolute, which will be used to determine which plugins to apply and also where
+the root directory and configuration file are. The file will not actually be
+read and does need even need to exist.
+
+This option implies --no-backups and --no-cache (since there's no actual file)
+and --quiet (since we don't want to mix extraneous output with the tidied
+result).
+
+    # Read from STDIN and write to STDOUT, with appropriate plugins
+    # for some/path.pl (which need not exist)
+    #
+    % tidyall --pipe some/path.pl
 
 =item -s, --svn
 
