@@ -1,12 +1,12 @@
 package Code::TidyAll::Util;
 BEGIN {
-  $Code::TidyAll::Util::VERSION = '0.08';
+  $Code::TidyAll::Util::VERSION = '0.09';
 }
 use Cwd qw(realpath);
 use Data::Dumper;
 use File::Basename;
 use File::Path;
-use File::Slurp qw(read_file write_file read_dir);
+use File::Slurp qw(read_file write_file);
 use File::Spec::Functions qw(abs2rel rel2abs);
 use File::Temp qw(tempdir);
 use Guard;
@@ -17,7 +17,7 @@ use warnings;
 use base qw(Exporter);
 
 our @EXPORT_OK =
-  qw(abs2rel basename can_load dirname dump_one_line mkpath pushd read_dir read_file realpath rel2abs tempdir_simple trim uniq write_file );
+  qw(abs2rel basename can_load dirname dump_one_line mkpath pushd read_file realpath rel2abs tempdir_simple trim uniq write_file );
 
 sub can_load {
 

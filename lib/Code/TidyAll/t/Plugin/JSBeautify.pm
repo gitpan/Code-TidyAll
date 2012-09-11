@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::JSBeautify;
 BEGIN {
-  $Code::TidyAll::t::Plugin::JSBeautify::VERSION = '0.08';
+  $Code::TidyAll::t::Plugin::JSBeautify::VERSION = '0.09';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 

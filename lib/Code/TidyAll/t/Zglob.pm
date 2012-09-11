@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Zglob;
 BEGIN {
-  $Code::TidyAll::t::Zglob::VERSION = '0.08';
+  $Code::TidyAll::t::Zglob::VERSION = '0.09';
 }
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';
 use Code::TidyAll::Util::Zglob qw(zglob_to_regex);

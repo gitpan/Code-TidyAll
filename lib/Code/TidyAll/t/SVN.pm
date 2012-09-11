@@ -1,6 +1,6 @@
 package Code::TidyAll::t::SVN;
 BEGIN {
-  $Code::TidyAll::t::SVN::VERSION = '0.08';
+  $Code::TidyAll::t::SVN::VERSION = '0.09';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr capture);
 use Code::TidyAll::SVN::Precommit;

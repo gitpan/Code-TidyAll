@@ -1,12 +1,12 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.08';
+  $Code::TidyAll::VERSION = '0.09';
 }
 use Cwd qw(realpath);
 use Config::INI::Reader;
 use Code::TidyAll::Cache;
 use Code::TidyAll::Util
-  qw(abs2rel basename can_load dirname dump_one_line mkpath read_dir read_file rel2abs tempdir_simple uniq write_file);
+  qw(abs2rel basename can_load dirname dump_one_line mkpath read_file rel2abs tempdir_simple uniq write_file);
 use Code::TidyAll::Result;
 use Date::Format;
 use Digest::SHA1 qw(sha1_hex);
@@ -431,7 +431,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SYNOPSIS
 

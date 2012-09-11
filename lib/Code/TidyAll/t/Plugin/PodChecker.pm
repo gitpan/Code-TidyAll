@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PodChecker;
 BEGIN {
-  $Code::TidyAll::t::Plugin::PodChecker::VERSION = '0.08';
+  $Code::TidyAll::t::Plugin::PodChecker::VERSION = '0.09';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 
@@ -49,7 +49,7 @@ __END__
 
 =head1 VERSION
 
-version 0.08
+version 0.09
 
 =head1 SEE ALSO
 

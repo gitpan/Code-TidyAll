@@ -1,6 +1,6 @@
 package Pod::Weaver::Section::SeeAlsoCodeTidyAll;
 BEGIN {
-  $Pod::Weaver::Section::SeeAlsoCodeTidyAll::VERSION = '0.08';
+  $Pod::Weaver::Section::SeeAlsoCodeTidyAll::VERSION = '0.09';
 }
 use Moose;
 with 'Pod::Weaver::Role::Section';

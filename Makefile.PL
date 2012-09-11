@@ -34,15 +34,18 @@ my %WriteMakefileArgs = (
     'File::Slurp' => '0',
     'File::Temp' => '0',
     'File::Zglob' => '0',
+    'Getopt::Long' => '0',
     'Guard' => '0',
+    'IPC::System::Simple' => '0.15',
     'List::MoreUtils' => '0',
     'Log::Any' => '0',
     'Moo' => '0.0091010',
+    'Pod::Usage' => '0',
     'Scalar::Util' => '0',
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.08',
+  'VERSION' => '0.09',
   'test' => {
     'TESTS' => 't/*.t'
   }
