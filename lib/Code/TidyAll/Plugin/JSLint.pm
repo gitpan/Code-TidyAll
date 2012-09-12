@@ -1,17 +1,19 @@
-package Code::TidyAll::Plugin::JSBeautify;
+package Code::TidyAll::Plugin::JSLint;
 BEGIN {
-  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.10';
+  $Code::TidyAll::Plugin::JSLint::VERSION = '0.10';
 }
-use IPC::System::Simple qw(run);
+use Capture::Tiny qw(capture_merged);
 use Moo;
 extends 'Code::TidyAll::Plugin';
 
-sub _build_cmd { 'js-beautify' }
+sub _build_cmd { 'jslint' }
 
-sub transform_file {
+sub validate_file {
     my ( $self, $file ) = @_;
 
-    run( sprintf( "%s --replace %s %s", $self->cmd, $self->argv, $file ) );
+    my $cmd = sprintf( "%s %s %s", $self->cmd, $self->argv, $file );
+    my $output = capture_merged { system($cmd) };
+    die "$output\n" if $output !~ /is OK\./;
 }
 
 1;
@@ -22,7 +24,7 @@ sub transform_file {
 
 =head1 NAME
 
-Code::TidyAll::Plugin::JSBeautify - use js-beautify with tidyall
+Code::TidyAll::Plugin::JSLint - use jslint with tidyall
 
 =head1 VERSION
 
@@ -32,21 +34,20 @@ version 0.10
 
    In tidyall.ini:
 
-   [JSBeautify]
+   [JSLint]
    select = static/**/*.js
-   argv = --indent-size 2 --brace-style expand
+   argv = --white --vars --regex
 
 =head1 DESCRIPTION
 
-Runs L<js-beautify|https://npmjs.org/package/js-beautify>, a Javascript tidier.
+Runs L<jslint|http://www.jslint.com/>, a Javascript validator, and dies if any
+problems were found.
 
 =head1 INSTALLATION
 
 Install L<npm|https://npmjs.org/>, then run
 
-    npm install js-beautify -g
-
-Do not confuse this with the C<jsbeautify> package (without the dash).
+    npm install jslint
 
 =head1 CONFIGURATION
 
@@ -54,11 +55,11 @@ Do not confuse this with the C<jsbeautify> package (without the dash).
 
 =item argv
 
-Arguments to pass to js-beautify
+Arguments to pass to jslint
 
 =item cmd
 
-Full path to js-beautify
+Full path to jslint
 
 =back
 

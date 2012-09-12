@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Precommit;
 BEGIN {
-  $Code::TidyAll::Git::Precommit::VERSION = '0.09';
+  $Code::TidyAll::Git::Precommit::VERSION = '0.10';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -80,7 +80,7 @@ tidyall'd
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 

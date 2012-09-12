@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSHint;
 BEGIN {
-  $Code::TidyAll::Plugin::JSHint::VERSION = '0.09';
+  $Code::TidyAll::Plugin::JSHint::VERSION = '0.10';
 }
 use Code::TidyAll::Util qw(tempdir_simple write_file);
 use Capture::Tiny qw(capture_merged);
@@ -43,7 +43,7 @@ Code::TidyAll::Plugin::JSHint - use jshint with tidyall
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
@@ -94,10 +94,15 @@ easy method is to install L<npm|https://npmjs.org/>, then run
 
 Arguments to pass to jshint
 
+=item cmd
+
+Full path to jshint
+
 =item options
 
 A whitespace separated string of options, as documented
-L<here|http://www.jshint.com/docs/>
+L<here|http://www.jshint.com/docs/>. These will be written to a temporary
+config file and passed as --config to argv.
 
 =back
 

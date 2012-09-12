@@ -15,6 +15,8 @@ lib/Code/TidyAll/Git/Util.pm
 lib/Code/TidyAll/Plugin.pm
 lib/Code/TidyAll/Plugin/JSBeautify.pm
 lib/Code/TidyAll/Plugin/JSHint.pm
+lib/Code/TidyAll/Plugin/JSLint.pm
+lib/Code/TidyAll/Plugin/MasonTidy.pm
 lib/Code/TidyAll/Plugin/PerlCritic.pm
 lib/Code/TidyAll/Plugin/PerlTidy.pm
 lib/Code/TidyAll/Plugin/PodChecker.pm
@@ -33,6 +35,8 @@ lib/Code/TidyAll/t/Git.pm
 lib/Code/TidyAll/t/Plugin.pm
 lib/Code/TidyAll/t/Plugin/JSBeautify.pm
 lib/Code/TidyAll/t/Plugin/JSHint.pm
+lib/Code/TidyAll/t/Plugin/JSLint.pm
+lib/Code/TidyAll/t/Plugin/MasonTidy.pm
 lib/Code/TidyAll/t/Plugin/PerlCritic.pm
 lib/Code/TidyAll/t/Plugin/PerlTidy.pm
 lib/Code/TidyAll/t/Plugin/PodChecker.pm
@@ -46,6 +50,8 @@ t/Zglob.t
 t/author-Git.t
 t/author-Plugin-JSBeautify.t
 t/author-Plugin-JSHint.t
+t/author-Plugin-JSLint.t
+t/author-Plugin-MasonTidy.t
 t/author-Plugin-PerlCritic.t
 t/author-Plugin-PerlTidy.t
 t/author-Plugin-PodChecker.t

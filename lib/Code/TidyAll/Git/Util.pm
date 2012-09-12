@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Util;
 BEGIN {
-  $Code::TidyAll::Git::Util::VERSION = '0.09';
+  $Code::TidyAll::Git::Util::VERSION = '0.10';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(pushd uniq);

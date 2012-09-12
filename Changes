@@ -2,6 +2,12 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.10  Sep 12, 2012
+
+* Improvements
+  - Add masontidy plugin (Mason component tidier)
+  - Add jslint plugin (javascript validator)
+
 0.09  Sep 11, 2012
 
 * Fixes

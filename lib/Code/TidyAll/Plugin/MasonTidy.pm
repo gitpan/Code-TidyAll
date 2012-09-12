@@ -1,12 +1,12 @@
-package Code::TidyAll::Plugin::JSBeautify;
+package Code::TidyAll::Plugin::MasonTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.10';
+  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.10';
 }
 use IPC::System::Simple qw(run);
 use Moo;
 extends 'Code::TidyAll::Plugin';
 
-sub _build_cmd { 'js-beautify' }
+sub _build_cmd { 'masontidy' }
 
 sub transform_file {
     my ( $self, $file ) = @_;
@@ -22,7 +22,7 @@ sub transform_file {
 
 =head1 NAME
 
-Code::TidyAll::Plugin::JSBeautify - use js-beautify with tidyall
+Code::TidyAll::Plugin::MasonTidy - use masontidy with tidyall
 
 =head1 VERSION
 
@@ -32,21 +32,20 @@ version 0.10
 
    In tidyall.ini:
 
-   [JSBeautify]
-   select = static/**/*.js
-   argv = --indent-size 2 --brace-style expand
+   [MasonTidy]
+   select = comps/**/*.{mc,mi}
+   argv = --indent-perl-block 0 --perltidy-argv "-noll -l=78"
 
 =head1 DESCRIPTION
 
-Runs L<js-beautify|https://npmjs.org/package/js-beautify>, a Javascript tidier.
+Runs L<masontidy|masontidy>, a tidier for L<HTML::Mason|HTML::Mason> and
+L<Mason 2|Mason> components.
 
 =head1 INSTALLATION
 
-Install L<npm|https://npmjs.org/>, then run
+Install L<masontidy|masontidy> from CPAN.
 
-    npm install js-beautify -g
-
-Do not confuse this with the C<jsbeautify> package (without the dash).
+    cpanm masontidy
 
 =head1 CONFIGURATION
 
@@ -54,11 +53,11 @@ Do not confuse this with the C<jsbeautify> package (without the dash).
 
 =item argv
 
-Arguments to pass to js-beautify
+Arguments to pass to masontidy
 
 =item cmd
 
-Full path to js-beautify
+Full path to masontidy
 
 =back
 

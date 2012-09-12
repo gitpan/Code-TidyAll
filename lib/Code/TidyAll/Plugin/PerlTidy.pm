@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.09';
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.10';
 }
 use Perl::Tidy;
 use Moo;
@@ -33,7 +33,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.09
+version 0.10
 
 =head1 SYNOPSIS
 
