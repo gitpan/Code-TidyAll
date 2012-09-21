@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::JSHint;
 BEGIN {
-  $Code::TidyAll::t::Plugin::JSHint::VERSION = '0.10';
+  $Code::TidyAll::t::Plugin::JSHint::VERSION = '0.11';
 }
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
@@ -51,6 +51,12 @@ sub test_main : Tests {
         conf         => { argv => "--config $rc_file" },
         expect_error => qr/not in camel case/,
         desc         => 'error - camelcase - conf file',
+    );
+    $self->tidyall(
+        source       => 'var my_object = {};',
+        conf         => { argv => "--badoption" },
+        expect_error => qr/Unknown option/,
+        desc         => 'error - bad option'
     );
 }
 

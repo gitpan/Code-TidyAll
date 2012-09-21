@@ -1,11 +1,18 @@
 package Code::TidyAll::Plugin::JSHint;
 BEGIN {
-  $Code::TidyAll::Plugin::JSHint::VERSION = '0.10';
+  $Code::TidyAll::Plugin::JSHint::VERSION = '0.11';
 }
 use Code::TidyAll::Util qw(tempdir_simple write_file);
 use Capture::Tiny qw(capture_merged);
 use Moo;
 extends 'Code::TidyAll::Plugin';
+
+sub validate_params {
+    my ( $self, $params ) = @_;
+
+    delete( $params->{options} );
+    return $self->SUPER::validate_params($params);
+}
 
 sub _build_cmd { 'jshint' }
 
@@ -43,7 +50,7 @@ Code::TidyAll::Plugin::JSHint - use jshint with tidyall
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 

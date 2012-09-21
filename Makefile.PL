@@ -42,10 +42,11 @@ my %WriteMakefileArgs = (
     'Moo' => '0.0091010',
     'Pod::Usage' => '0',
     'Scalar::Util' => '0',
+    'Text::ParseWords' => '0',
     'Time::Duration::Parse' => '0',
     'Try::Tiny' => '0'
   },
-  'VERSION' => '0.10',
+  'VERSION' => '0.11',
   'test' => {
     'TESTS' => 't/*.t'
   }

@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::t::Plugin::PerlTidy::VERSION = '0.10';
+  $Code::TidyAll::t::Plugin::PerlTidy::VERSION = '0.11';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 
@@ -24,6 +24,11 @@ sub test_main : Tests {
     $self->tidyall(
         source       => 'if ($foo) {\n    my $bar = $baz;\n',
         expect_error => qr/Final nesting depth/
+    );
+    $self->tidyall(
+        conf         => { argv => '--badoption' },
+        source       => $source,
+        expect_error => qr/Unknown option: badoption/
     );
 }
 

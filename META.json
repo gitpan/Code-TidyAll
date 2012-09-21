@@ -48,6 +48,7 @@
             "Moo" : "0.0091010",
             "Pod::Usage" : 0,
             "Scalar::Util" : 0,
+            "Text::ParseWords" : 0,
             "Time::Duration::Parse" : 0,
             "Try::Tiny" : 0
          }
@@ -70,6 +71,6 @@
          "web" : "https://github.com/jonswar/perl-code-tidyall"
       }
    },
-   "version" : "0.10"
+   "version" : "0.11"
 }
 

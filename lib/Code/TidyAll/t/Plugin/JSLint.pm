@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::JSLint;
 BEGIN {
-  $Code::TidyAll::t::Plugin::JSLint::VERSION = '0.10';
+  $Code::TidyAll::t::Plugin::JSLint::VERSION = '0.11';
 }
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
@@ -25,6 +25,12 @@ sub test_main : Tests {
         conf      => { argv => '--white' },
         expect_ok => 1,
         desc      => 'ok - bad indentation, --white'
+    );
+    $self->tidyall(
+        source       => 'var my_object = {};',
+        conf         => { argv => '--badoption' },
+        expect_error => qr/Usage/,
+        desc         => 'error - bad option'
     );
 }
 

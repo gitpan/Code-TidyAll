@@ -2,8 +2,9 @@
 use Cwd qw(cwd realpath);
 use Getopt::Long;
 use Pod::Usage;
+use Capture::Tiny qw(capture_merged);
 use Code::TidyAll;
-use Code::TidyAll::Util qw(can_load dirname);
+use Code::TidyAll::Util qw(can_load dirname rel2abs);
 use strict;
 use warnings;
 
@@ -14,12 +15,14 @@ sub usage {
     Pod::Usage::pod2usage( { verbose => 1, output => \*STDERR } );
 }
 
-my ( %params, $all_files, $conf_file, $git_files, $help, $inc_dirs, $pipe, $svn_files );
+my ( %params, $all_files, $conf_file, $git_files, $help, $inc_dirs, $list, $pipe, $svn_files );
+my $conf_name = 'tidyall.ini';
 
 GetOptions(
     'backup-ttl=i'    => \$params{backup_ttl},
     'check-only'      => \$params{check_only},
     'conf-file=s'     => \$conf_file,
+    'conf-name=s'     => \$conf_name,
     'data-dir=s'      => \$params{data_dir},
     'no-backups'      => \$params{no_backups},
     'no-cache'        => \$params{no_cache},
@@ -30,6 +33,7 @@ GetOptions(
     'a|all'           => \$all_files,
     'g|git'           => \$git_files,
     'h|help'          => \$help,
+    'l|list'          => \$list,
     'm|mode=s'        => \$params{mode},
     'p|pipe=s'        => \$pipe,
     's|svn'           => \$svn_files,
@@ -49,14 +53,18 @@ $conf_file = "$params{root_dir}/tidyall.ini"
 
 my $tidyall_class = $params{tidyall_class} || 'Code::TidyAll';
 
-my (@results);
-if ( ( $all_files || $svn_files || $git_files ) ) {
+my ( $ct, @files );
+
+if ($pipe) {
+    my $status = handle_pipe($pipe);
+    exit($status);
+}
+elsif ( ( $all_files || $svn_files || $git_files ) ) {
     die "cannot use filename(s) with -a/--all, -s/--svn, or -g/--git"
       if @ARGV;
-    $conf_file ||= $tidyall_class->find_conf_file( cwd() );
-    my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
+    $conf_file ||= $tidyall_class->find_conf_file( $conf_name, cwd() );
+    $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
 
-    my @files;
     if ($all_files) {
         @files = $ct->find_matched_files;
     }
@@ -68,22 +76,23 @@ if ( ( $all_files || $svn_files || $git_files ) ) {
         require Code::TidyAll::Git::Util;
         @files = Code::TidyAll::Git::Util::git_uncommitted_files( $ct->root_dir );
     }
-    @results = $ct->process_files(@files);
 }
-elsif ($pipe) {
-    handle_pipe($pipe);
-}
-elsif ( my @files = @ARGV ) {
-    $conf_file ||= $tidyall_class->find_conf_file( dirname( $files[0] ) );
-    my $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
-    @results = $ct->process_files(@files);
+elsif ( @files = @ARGV ) {
+    $conf_file ||= $tidyall_class->find_conf_file( $conf_name, dirname( $files[0] ) );
+    $ct = $tidyall_class->new_from_conf_file( $conf_file, %params );
 }
 else {
     die "must pass -a/--all, -s/--svn, -g/--git, -p/--pipe, or filename(s)";
 }
 
-my $status = ( grep { $_->error } @results ) ? 1 : 0;
-exit($status);
+if ($list) {
+    $ct->list_files(@files);
+}
+else {
+    my @results = $ct->process_files(@files);
+    my $status = ( grep { $_->error } @results ) ? 1 : 0;
+    exit($status);
+}
 
 sub handle_pipe {
     my ($pipe_filename) = @_;
@@ -91,26 +100,34 @@ sub handle_pipe {
     $params{$_} = 1 for ( 'no_backups', 'no_cache', 'quiet' );
     $params{$_} = 0 for ('verbose');
 
-    $conf_file ||= $tidyall_class->find_conf_file( dirname($pipe_filename) );
+    $conf_file ||= $tidyall_class->find_conf_file( $conf_name, dirname($pipe_filename) );
     my $ct       = $tidyall_class->new_from_conf_file( $conf_file, %params );
     my $root_dir = $ct->root_dir;
     my $source   = do { local $/; <STDIN> };
-    my $result   = $ct->process_source( $source, $ct->_small_path($pipe_filename) );
+
+    # Merge stdout and stderr and output all to stderr, so that stdout is
+    # dedicated to the tidied content
+    #
+    my $result;
+    my $output = capture_merged {
+        $result = $ct->process_source( $source, $ct->_small_path( rel2abs($pipe_filename) ) );
+    };
+    print STDERR $output;
+
     if ( my $error = $result->error ) {
-        print STDERR $error;
-        exit(1);
+        return 1;
     }
     elsif ( $result->state eq 'no_match' ) {
         print STDERR "No match for '$pipe'";
-        exit(1);
+        return 1;
     }
     elsif ( $result->state eq 'checked' ) {
         print $source;
-        exit(0);
+        return 0;
     }
     else {
         print $result->new_contents;
-        exit(0);
+        return 0;
     }
 }
 
@@ -126,7 +143,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 
@@ -234,6 +251,9 @@ C<tidyall> will expect to find C<tidyall.ini> in the specified root directory.
 
 =back
 
+You can also pass --conf-name to change the name that is searched for, or
+--conf-file to specify an explicit path.
+
 =head1 CONFIGURATION
 
 The config file (C<tidyall.ini>) is in L<Config::INI|Config::INI> format.
@@ -245,7 +265,7 @@ Here's a sample:
 
     [PerlCritic]
     select = lib/**/*.pm
-    ignore = lib/UtterHack.pm
+    ignore = lib/UtterHack.pm lib/OneTime/*.pm
     argv = -severity 3
 
     [PodTidy]
@@ -281,21 +301,28 @@ The header of each section refers to a tidyall I<plugin>. The name is
 automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins with a
 '+', e.g.
 
-    # Uses plugin Code::TidyAll::Plugin::PerlTidy
+    ; Uses plugin Code::TidyAll::Plugin::PerlTidy
+    ;
     [PerlTidy]
 
-    # Uses plugin My::TidyAll::Plugin
+    ; Uses plugin My::TidyAll::Plugin
+    ;
     [+My::TidyAll::Plugin]
 
 =item select
 
-A required L<File::Zglob|File::Zglob> pattern indicating which files to select,
+One or more L<File::Zglob|File::Zglob> patterns, separated by whitespae or on
+multiple lines, indicating which files to select. At least one is required.
 e.g.
 
-    # All .pl and .pm files somewhere under bin, lib and t
-    select = {bin,lib,t}/**/*.p[lm]
+    ; All .t and .pl somewhere under bin and t;
+    ; plus all .pm files directly under lib/Foo and lib/Bar
+    ;
+    select = {bin,t}/**/*.p[lm]
+    select = lib/{Foo,Bar}/*.pm
 
-    # All .txt files anywhere in the project
+    ; All .txt files anywhere in the project
+    ;
     select = **/*.txt
 
 The pattern is relative to the root directory and should have no leading slash.
@@ -305,12 +332,15 @@ L<File::Zglob|File::Zglob> documentation for more details.
 
 =item ignore
 
-A L<File::Zglob|File::Zglob> pattern, of the same format described above,
-indicating which files to ignore.  This overrides C<select>. e.g.
+One or more L<File::Zglob|File::Zglob> patterns, separated by whitespace or on
+multiple lines, indicating which files to ignore.  This is optional and
+overrides C<select>. e.g.
 
-    # All .pl files under bin, except under bin/tmp
+    ; All .pl files anywhere under bin, except bin/awful.pl or anywhere
+    ; under bin/tmp
+    ;
     select = bin/**/*.pl
-    ignore = bin/tmp/*.pl
+    ignore = bin/awful.pl bin/tmp/**/*.pl
 
 =item only_modes
 
@@ -357,15 +387,32 @@ Process all added or modified files in the current git working directory.
 
 Print help message
 
+=item -l, --list
+
+List each file along with the list of plugins it matches (files without any
+matches are skipped). Does not actually process any files and does not care
+whether files are cached. Generally used with -a, -g, or -s. e.g.
+
+    % tidyall -a -l
+    lib/CHI.pm (PerlCritic, PerlTidy, PodTidy)
+    lib/CHI/Benchmarks.pod (PodTidy)
+    lib/CHI/CacheObject.pm (PerlCritic, PerlTidy, PodTidy)
+
 =item -m, --mode       
 
 Optional mode that can affect which plugins run. Defaults to 'cli'. See
 L</MODES>.
 
-=item -p, --pipe
+=item -p path, --pipe path
 
-Read content from STDIN, and write either the tidied content to STDOUT or the
-error message to STDERR.
+Read content from STDIN instead of from a file. This option takes a filename
+argument, relative or absolute, which will be used to determine which plugins
+to apply and also where to start looking upwards for the configuration file. 
+The file will not actually be read and does need even need to exist.
+
+If an error occurs, it will be output to STDERR and tidyall will exit with
+status 1. Otherwise, the tidied content will be output to STDOUT and tidyall
+will exit with status 0.
 
 When specifying this option you must specify exactly one filename, relative or
 absolute, which will be used to determine which plugins to apply and also where
@@ -393,15 +440,16 @@ Suppress output except for errors.
 
 Show extra output.
 
-=item -I
+=item -I I<path1,path2,...>
 
-Add libraries to @INC, as Perl's -I. Useful if --tidyall-class or plugins are
-in an alternate lib directory.
+Add one or more library paths to @INC, like Perl's -I. Useful if
+--tidyall-class or plugins are in an alternate lib directory.
 
-=item --backup-ttl     
+=item --backup-ttl I<duration>
 
-Amount of time before backup files can be purged; defaults to "1h". Can be any
-string recognized by L<Time::Duration::Parse|Time::Duration::Parse>.
+Amount of time before backup files can be purged. Can be a number of seconds or
+any string recognized by L<Time::Duration::Parse|Time::Duration::Parse>, e.g.
+"4h" or "1day". Defaults to "1h".
 
 =item --check-only     
 
@@ -411,12 +459,16 @@ not. This is used by L<Test::Code::TidyAll|Test::Code::TidyAll> and the
 L<svn|Code::TidyAll::SVN::Precommit> and L<git|Code::TidyAll::Git::Precommit>
 pre-commit hooks, for example, to enforce that you've tidied your files.
 
-=item --conf-file      
+=item --conf-file I<path>
 
-Specify config file explicitly. Usually this is inferred from the specified
-file(s) or from the current working directory.
+Specify relative or absolute path to conf file, instead of searching for it in
+the usual way.
 
-=item --data-dir       
+=item --conf-name I<name>
+
+Specify a conf file name to search for instead of C<tidyall.ini>.
+
+=item --data-dir I<path>
 
 Contains data like backups and cache. Defaults to root_dir/.tidyall.d
 
@@ -429,7 +481,7 @@ Don't backup files before processing.
 Don't cache last processed times; process all files every time. See also
 C<--refresh-cache>.
 
-=item --output-suffix  
+=item --output-suffix I<suffix>
 
 Suffix to add to a filename before outputting the modified version, e.g.
 ".tdy". Default is none, which means overwrite the file.
@@ -444,7 +496,7 @@ info. See also C<--no-cache>.
 Specify root dir explicitly. Usually this is inferred from the specified files
 or the current working directory.
 
-=item --tidyall-class  
+=item --tidyall-class I<class>
 
 Subclass to use instead of C<Code::TidyAll>.
 

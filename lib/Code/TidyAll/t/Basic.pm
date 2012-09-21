@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Basic;
 BEGIN {
-  $Code::TidyAll::t::Basic::VERSION = '0.10';
+  $Code::TidyAll::t::Basic::VERSION = '0.11';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(dirname mkpath pushd read_file tempdir_simple write_file);
@@ -13,7 +13,7 @@ sub test_plugin { "+Code::TidyAll::Test::Plugin::$_[0]" }
 my %UpperText  = ( test_plugin('UpperText')  => { select => '**/*.txt' } );
 my %ReverseFoo = ( test_plugin('ReverseFoo') => { select => '**/foo*' } );
 my %RepeatFoo  = ( test_plugin('RepeatFoo')  => { select => '**/foo*' } );
-my ( $conf1, $conf2 );
+my $cli_conf;
 
 sub create_dir {
     my ( $self, $files ) = @_;
@@ -208,6 +208,25 @@ sub test_caching_and_backups : Tests {
     }
 }
 
+sub test_selects_and_ignores : Tests {
+    my $self = shift;
+
+    my @files = ( "a/foo.pl", "b/foo.pl", "a/foo.pm", "a/bar.pm", "b/bar.pm" );
+    my $root_dir = $self->create_dir( { map { $_ => 'hi' } @files } );
+    my $ct = Code::TidyAll->new(
+        root_dir => $root_dir,
+        plugins  => {
+            test_plugin('UpperText') => {
+                select => '**/*.pl **/*.pm b/bar.pm c/bar.pl',
+                ignore => 'a/foo.pl **/bar.pm c/baz.pl'
+            }
+        }
+    );
+    cmp_set( [ $ct->find_matched_files() ], [ "$root_dir/a/foo.pm", "$root_dir/b/foo.pl" ] );
+    cmp_deeply( [ map { $_->name } $ct->plugins_for_path("a/foo.pm") ],
+        [ test_plugin('UpperText') ] );
+}
+
 sub test_errors : Tests {
     my $self = shift;
 
@@ -242,35 +261,11 @@ sub test_errors : Tests {
     throws_ok { $ct->process_files("$other_dir/foo.txt") } qr/not underneath root dir/;
 }
 
-sub test_conf_file : Tests {
-    my $self      = shift;
-    my $root_dir  = $self->create_dir();
-    my $conf_file = "$root_dir/tidyall.ini";
-    write_file( $conf_file, $conf1 );
-
-    my $ct       = Code::TidyAll->new_from_conf_file($conf_file);
-    my %expected = (
-        backup_ttl      => '5m',
-        backup_ttl_secs => '300',
-        no_backups      => undef,
-        no_cache        => 1,
-        root_dir        => dirname($conf_file),
-        data_dir        => "$root_dir/.tidyall.d",
-        plugins         => {
-            '+Code::TidyAll::Test::Plugin::UpperText' => { select => '**/*.txt' },
-            '+Code::TidyAll::Test::Plugin::RepeatFoo' => { select => '**/foo*', times => 3 }
-        }
-    );
-    while ( my ( $method, $value ) = each(%expected) ) {
-        cmp_deeply( $ct->$method, $value, "$method" );
-    }
-}
-
 sub test_cli : Tests {
     my $self      = shift;
     my $root_dir  = $self->create_dir();
     my $conf_file = "$root_dir/tidyall.ini";
-    write_file( $conf_file, $conf2 );
+    write_file( $conf_file, $cli_conf );
 
     write_file( "$root_dir/foo.txt", "hello" );
     my $output = capture_stdout {
@@ -305,19 +300,7 @@ sub test_cli : Tests {
     unlike( $stderr, qr/\S/, "pipe: no stderr" );
 }
 
-$conf1 = '
-backup_ttl = 5m
-no_cache = 1
-
-[+Code::TidyAll::Test::Plugin::UpperText]
-select = **/*.txt
-
-[+Code::TidyAll::Test::Plugin::RepeatFoo]
-select = **/foo*
-times = 3
-';
-
-$conf2 = '
+$cli_conf = '
 backup_ttl = 15m
 verbose = 1
 

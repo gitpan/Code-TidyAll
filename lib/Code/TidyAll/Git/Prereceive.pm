@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Prereceive;
 BEGIN {
-  $Code::TidyAll::Git::Prereceive::VERSION = '0.10';
+  $Code::TidyAll::Git::Prereceive::VERSION = '0.11';
 }
 use Code::TidyAll;
 use Code::TidyAll::Util qw(realpath tempdir_simple write_file);
@@ -109,7 +109,7 @@ tidyall'd
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 

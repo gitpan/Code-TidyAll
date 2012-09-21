@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PerlCritic;
 BEGIN {
-  $Code::TidyAll::t::Plugin::PerlCritic::VERSION = '0.10';
+  $Code::TidyAll::t::Plugin::PerlCritic::VERSION = '0.11';
 }
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
@@ -26,6 +26,17 @@ sub test_main : Tests {
         source    => 'my $foo = 5\n',
         conf      => { argv => "--profile $rc_file" },
         expect_ok => 1,
+    );
+    $self->tidyall(
+        source       => 'my $foo = 5\n',
+        conf         => { argv => "--profile $rc_file --badoption" },
+        expect_error => qr/Unknown option: badoption/
+    );
+    write_file( $rc_file, "badconfig = 1\n" );
+    $self->tidyall(
+        source       => 'my $foo = 5\n',
+        conf         => { argv => "--profile $rc_file" },
+        expect_error => qr/"badconfig" is not a supported option/
     );
 }
 

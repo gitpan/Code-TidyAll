@@ -1,9 +1,9 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.10';
+  $Code::TidyAll::VERSION = '0.11';
 }
 use Cwd qw(realpath);
-use Config::INI::Reader;
+use Code::TidyAll::Config::INI::Reader;
 use Code::TidyAll::Cache;
 use Code::TidyAll::Util
   qw(abs2rel basename can_load dirname dump_one_line mkpath read_file rel2abs tempdir_simple uniq write_file);
@@ -40,8 +40,6 @@ has 'base_sig'         => ( is => 'lazy', init_arg => undef );
 has 'cache'            => ( is => 'lazy', init_arg => undef );
 has 'plugin_objects'   => ( is => 'lazy', init_arg => undef );
 has 'plugins_for_mode' => ( is => 'lazy', init_arg => undef );
-
-my $ini_name = 'tidyall.ini';
 
 sub _build_backup_dir {
     my $self = shift;
@@ -178,6 +176,17 @@ sub process_files {
     return map { $self->process_file( realpath($_) ) } @files;
 }
 
+sub list_files {
+    my ( $self, @files ) = @_;
+
+    foreach my $file (@files) {
+        my $path = $self->_small_path($file);
+        if ( my @plugins = $self->plugins_for_path($path) ) {
+            printf( "%s (%s)\n", $path, join( ", ", map { $_->name } @plugins ) );
+        }
+    }
+}
+
 sub process_file {
     my ( $self, $file ) = @_;
 
@@ -271,7 +280,7 @@ sub _read_conf_file {
     my $conf_string = read_file($conf_file);
     my $root_dir    = dirname($conf_file);
     $conf_string =~ s/\$ROOT/$root_dir/g;
-    my $conf_hash = Config::INI::Reader->read_string($conf_string);
+    my $conf_hash = Code::TidyAll::Config::INI::Reader->read_string($conf_string);
     die "'$conf_file' did not evaluate to a hash"
       unless ( ref($conf_hash) eq 'HASH' );
     return $conf_hash;
@@ -318,27 +327,27 @@ sub _purge_backups {
 }
 
 sub find_conf_file {
-    my ( $class, $start_dir ) = @_;
+    my ( $class, $conf_name, $start_dir ) = @_;
 
     my $path1     = rel2abs($start_dir);
     my $path2     = realpath($start_dir);
-    my $conf_file = $class->_find_conf_file_upward($path1)
-      || $class->_find_conf_file_upward($path2);
+    my $conf_file = $class->_find_conf_file_upward( $conf_name, $path1 )
+      || $class->_find_conf_file_upward( $conf_name, $path2 );
     unless ( defined $conf_file ) {
-        die sprintf( "could not find $ini_name upwards from %s",
+        die sprintf( "could not find $conf_name upwards from %s",
             ( $path1 eq $path2 ) ? "'$path1'" : "'$path1' or '$path2'" );
     }
     return $conf_file;
 }
 
 sub _find_conf_file_upward {
-    my ( $class, $search_dir ) = @_;
+    my ( $class, $conf_name, $search_dir ) = @_;
 
     $search_dir =~ s{/+$}{};
 
     my $cnt = 0;
     while (1) {
-        my $try_path = "$search_dir/$ini_name";
+        my $try_path = "$search_dir/$conf_name";
         if ( -f $try_path ) {
             return $try_path;
         }
@@ -359,9 +368,9 @@ sub find_matched_files {
     my $plugins_for_path = $self->{plugins_for_path};
     my $root_length      = length( $self->root_dir );
     foreach my $plugin ( @{ $self->plugin_objects } ) {
-        my @selected = grep { -f && !-l } $self->_zglob( $plugin->select );
-        if ( defined( $plugin->ignore ) ) {
-            my %is_ignored = map { ( $_, 1 ) } $self->_zglob( $plugin->ignore );
+        my @selected = grep { -f && !-l } $self->_zglob( $plugin->selects );
+        if ( @{ $plugin->ignores } ) {
+            my %is_ignored = map { ( $_, 1 ) } $self->_zglob( $plugin->ignores );
             @selected = grep { !$is_ignored{$_} } @selected;
         }
         push( @matched_files, @selected );
@@ -383,10 +392,19 @@ sub plugins_for_path {
 }
 
 sub _zglob {
-    my ( $self, $expr ) = @_;
+    my ( $self, $globs ) = @_;
 
     local $File::Zglob::NOCASE = 0;
-    return File::Zglob::zglob( join( "/", $self->root_dir, $expr ) );
+    my @files;
+    foreach my $glob (@$globs) {
+        try {
+            push( @files, File::Zglob::zglob( join( "/", $self->root_dir, $glob ) ) );
+        }
+        catch {
+            die "error parsing '$glob': $_";
+        }
+    }
+    return uniq(@files);
 }
 
 sub _small_path {
@@ -431,7 +449,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 

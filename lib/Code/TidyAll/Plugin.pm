@@ -1,9 +1,9 @@
 package Code::TidyAll::Plugin;
 BEGIN {
-  $Code::TidyAll::Plugin::VERSION = '0.10';
+  $Code::TidyAll::Plugin::VERSION = '0.11';
 }
 use Code::TidyAll::Util qw(basename read_file write_file);
-use Code::TidyAll::Util::Zglob qw(zglob_to_regex);
+use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
 use Scalar::Util qw(weaken);
 use Moo;
 
@@ -17,33 +17,66 @@ has 'tidyall' => ( is => 'ro', required => 1, weak_ref => 1 );
 
 # Internal
 has 'ignore_regex' => ( is => 'lazy' );
+has 'ignores'      => ( is => 'lazy' );
 has 'select_regex' => ( is => 'lazy' );
-
-sub BUILD {
-    my ( $self, $params ) = @_;
-
-    my $select = $self->{select};
-    die sprintf( "select is required for '%s'", $self->name ) unless defined($select);
-    die sprintf( "select for '%s' should not begin with /", $self->name )
-      if ( substr( $select, 0, 1 ) eq '/' );
-
-    my $ignore = $self->{ignore};
-    die sprintf( "ignore for '%s' should not begin with /", $self->name )
-      if ( defined($ignore) && substr( $ignore, 0, 1 ) eq '/' );
-}
+has 'selects'      => ( is => 'lazy' );
 
 sub _build_cmd {
     die "no default cmd specified";
 }
 
+sub _build_selects {
+    my ($self) = @_;
+    die sprintf( "select is required for '%s'", $self->name ) unless defined( $self->select );
+    return $self->_parse_zglob_list( $self->select );
+}
+
 sub _build_select_regex {
     my ($self) = @_;
-    return zglob_to_regex( $self->select );
+    return zglobs_to_regex( @{ $self->selects } );
+}
+
+sub _build_ignores {
+    my ($self) = @_;
+    return $self->_parse_zglob_list( $self->ignore );
 }
 
 sub _build_ignore_regex {
     my ($self) = @_;
-    return $self->ignore ? zglob_to_regex( $self->ignore ) : qr/(?!)/;
+    return zglobs_to_regex( @{ $self->ignores } );
+}
+
+sub BUILD {
+    my ( $self, $params ) = @_;
+
+    # Strict constructor
+    #
+    $self->validate_params($params);
+}
+
+sub validate_params {
+    my ( $self, $params ) = @_;
+
+    delete( $params->{only_modes} );
+    delete( $params->{except_modes} );
+    if ( my @bad_params = grep { !$self->can($_) } keys(%$params) ) {
+        die sprintf(
+            "unknown option%s %s for plugin '%s'",
+            @bad_params > 1 ? "s" : "",
+            join( ", ", sort map { "'$_'" } @bad_params ),
+            $self->name
+        );
+    }
+}
+
+sub _parse_zglob_list {
+    my ( $self, $zglob_list ) = @_;
+    $zglob_list = '' if !defined($zglob_list);
+    my @zglobs = split( /\s+/, $zglob_list );
+    if ( my ($bad_zglob) = ( grep { m{^/} } @zglobs ) ) {
+        die "zglob '$bad_zglob' should not begin with slash";
+    }
+    return \@zglobs;
 }
 
 # No-ops by default; may be overridden in subclass
@@ -101,7 +134,7 @@ Code::TidyAll::Plugin - Create plugins for tidying or validating code
 
 =head1 VERSION
 
-version 0.10
+version 0.11
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Code::TidyAll::Util;
 BEGIN {
-  $Code::TidyAll::Util::VERSION = '0.10';
+  $Code::TidyAll::Util::VERSION = '0.11';
 }
 use Cwd qw(realpath);
 use Data::Dumper;
