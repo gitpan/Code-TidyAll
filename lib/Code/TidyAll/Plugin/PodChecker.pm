@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodChecker;
 BEGIN {
-  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.11';
+  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture_merged);
 use Pod::Checker;
@@ -18,7 +18,7 @@ sub validate_file {
     my $output  = capture_merged { $checker->parse_from_file( $file, \*STDERR ) };
     die $output
       if $checker->num_errors
-          or ( $self->warnings && $checker->num_warnings );
+      or ( $self->warnings && $checker->num_warnings );
 }
 
 1;
@@ -33,11 +33,11 @@ Code::TidyAll::Plugin::PodChecker - use podchecker with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    ; Check for errors, but ignore warnings
    ;

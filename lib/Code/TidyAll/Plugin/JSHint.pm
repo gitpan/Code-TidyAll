@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSHint;
 BEGIN {
-  $Code::TidyAll::Plugin::JSHint::VERSION = '0.11';
+  $Code::TidyAll::Plugin::JSHint::VERSION = '0.12';
 }
 use Code::TidyAll::Util qw(tempdir_simple write_file);
 use Capture::Tiny qw(capture_merged);
@@ -35,7 +35,10 @@ sub validate_file {
 
     my $cmd = sprintf( "%s %s %s", $self->cmd, $self->argv, $file );
     my $output = capture_merged { system($cmd) };
-    die "$output\n" if $output =~ /\S/;
+    if ( $output =~ /\S/ ) {
+        $output =~ s/^$file:\s*//gm;
+        die "$output\n";
+    }
 }
 
 1;
@@ -50,11 +53,11 @@ Code::TidyAll::Plugin::JSHint - use jshint with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    ; With default settings
    ;
@@ -83,7 +86,7 @@ version 0.11
 
 =head1 DESCRIPTION
 
-Runs L<jshint|http://www.jshint.com/>, a Javascript validator, and dies if any
+Runs L<jshint|http://www.jshint.com/>, a JavaScript validator, and dies if any
 problems were found.
 
 =head1 INSTALLATION

@@ -21,6 +21,7 @@ lib/Code/TidyAll/Plugin/MasonTidy.pm
 lib/Code/TidyAll/Plugin/PerlCritic.pm
 lib/Code/TidyAll/Plugin/PerlTidy.pm
 lib/Code/TidyAll/Plugin/PodChecker.pm
+lib/Code/TidyAll/Plugin/PodSpell.pm
 lib/Code/TidyAll/Plugin/PodTidy.pm
 lib/Code/TidyAll/Result.pm
 lib/Code/TidyAll/SVN/Precommit.pm
@@ -42,13 +43,16 @@ lib/Code/TidyAll/t/Plugin/MasonTidy.pm
 lib/Code/TidyAll/t/Plugin/PerlCritic.pm
 lib/Code/TidyAll/t/Plugin/PerlTidy.pm
 lib/Code/TidyAll/t/Plugin/PodChecker.pm
+lib/Code/TidyAll/t/Plugin/PodSpell.pm
 lib/Code/TidyAll/t/Plugin/PodTidy.pm
 lib/Code/TidyAll/t/SVN.pm
+lib/Code/TidyAll/t/Util.pm
 lib/Code/TidyAll/t/Zglob.pm
 lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
 lib/Test/Code/TidyAll.pm
 t/Basic.t
 t/Conf.t
+t/Util.t
 t/Zglob.t
 t/author-Git.t
 t/author-Plugin-JSBeautify.t
@@ -58,6 +62,7 @@ t/author-Plugin-MasonTidy.t
 t/author-Plugin-PerlCritic.t
 t/author-Plugin-PerlTidy.t
 t/author-Plugin-PodChecker.t
+t/author-Plugin-PodSpell.t
 t/author-Plugin-PodTidy.t
 t/author-SVN.t
 t/author-tidy-and-critic.t

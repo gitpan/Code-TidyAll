@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlCritic;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.11';
+  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture_merged);
 use Moo;
@@ -28,11 +28,11 @@ Code::TidyAll::Plugin::PerlCritic - use perlcritic with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    ; Configure in-line
    ;

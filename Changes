@@ -2,6 +2,18 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.12  Sep 27, 2012
+
+* Plugins
+  - Add podspell plugin (POD spell checker)
+
+* Improvements
+  - Add --iterations flag to run tidier transforms multiple times
+  - Allow .tidyallrc as alternative to tidyall.ini
+  - Allow git prereceive hook to be bypassed by pushing an identical set of commits
+    several consecutive times (allow_repeated_push)
+  - Add handcrafted usage w/summary of options, instead of Pod::Usage
+
 0.11  Sep 21, 2012
 
 * Improvements
@@ -18,7 +30,7 @@ Revision history for Code-TidyAll
 
 0.10  Sep 12, 2012
 
-* Improvements
+* Plugins
   - Add masontidy plugin (Mason component tidier)
   - Add jslint plugin (javascript validator)
 
@@ -30,9 +42,11 @@ Revision history for Code-TidyAll
 
 0.08  Sep 10, 2012
 
-* Improvements
+* Plugins
   - Add js-beautify plugin (javascript tidier)
   - Add jshint plugin (javascript validator)
+
+* Improvements
   - Add podchecker plugin
   - Add -p/--pipe flag to read from STDIN and write to STDOUT
   - Allow tidyall.el to work in narrowed regions

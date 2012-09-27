@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PodTidy::VERSION = '0.11';
+  $Code::TidyAll::Plugin::PodTidy::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture_merged);
 use Pod::Tidy;
@@ -36,11 +36,11 @@ Code::TidyAll::Plugin::PodTidy - use podtidy with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    [PodTidy]
    select = lib/**/*.{pm,pod}

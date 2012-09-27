@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin;
 BEGIN {
-  $Code::TidyAll::t::Plugin::VERSION = '0.11';
+  $Code::TidyAll::t::Plugin::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture);
 use Code::TidyAll::Util qw(tempdir_simple);
@@ -56,7 +56,7 @@ sub tidyall {
     }
     elsif ( my $expect_error = $p{expect_error} ) {
         is( $result->state, 'error', "state=error [$desc]" );
-        like( $result->error, $expect_error, "error message [$desc]" );
+        like( $result->error || '', $expect_error, "error message [$desc]" );
     }
 }
 

@@ -1,6 +1,6 @@
 package Pod::Weaver::Section::SeeAlsoCodeTidyAll;
 BEGIN {
-  $Pod::Weaver::Section::SeeAlsoCodeTidyAll::VERSION = '0.11';
+  $Pod::Weaver::Section::SeeAlsoCodeTidyAll::VERSION = '0.12';
 }
 use Moose;
 with 'Pod::Weaver::Role::Section';
@@ -16,9 +16,9 @@ sub weave_section {
     for ( my $i = 0 ; $i < $idc->length ; $i++ ) {
         next unless my $para = $idc->[$i];
         return
-          if $para->can('command')
-              && $para->command eq 'head1'
-              && $para->content eq 'SEE ALSO';
+             if $para->can('command')
+          && $para->command eq 'head1'
+          && $para->content eq 'SEE ALSO';
     }
     $document->children->push(
         Pod::Elemental::Element::Nested->new(

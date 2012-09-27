@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSBeautify;
 BEGIN {
-  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.11';
+  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.12';
 }
 use IPC::System::Simple qw(run);
 use Moo;
@@ -32,11 +32,11 @@ Code::TidyAll::Plugin::JSBeautify - use js-beautify with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    [JSBeautify]
    select = static/**/*.js
@@ -44,7 +44,7 @@ version 0.11
 
 =head1 DESCRIPTION
 
-Runs L<js-beautify|https://npmjs.org/package/js-beautify>, a Javascript tidier.
+Runs L<js-beautify|https://npmjs.org/package/js-beautify>, a JavaScript tidier.
 
 =head1 INSTALLATION
 

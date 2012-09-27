@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::MasonTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.11';
+  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture_merged);
 use Mason::Tidy;
@@ -36,11 +36,11 @@ Code::TidyAll::Plugin::MasonTidy - use masontidy with tidyall
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 
-   In tidyall.ini:
+   In configuration:
 
    [MasonTidy]
    select = comps/**/*.{mc,mi}

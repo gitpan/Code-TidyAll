@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.11
+    version 0.12
 
 SYNOPSIS
         use Code::TidyAll;
@@ -59,11 +59,12 @@ CONSTRUCTION
     plugins
         Specify a hash of plugins, each of which is itself a hash of
         options. This is equivalent to what would be parsed out of the
-        sections in `tidyall.ini'.
+        sections in the configuration file.
 
     backup_ttl
     check_only
     data_dir
+    iterations
     mode
     no_backups
     no_cache
@@ -97,21 +98,21 @@ METHODS
 
         *   Return a Code::TidyAll::Result object
 
-    process_source (source, path)
+    process_source (*source*, *path*)
         Same as process_file, but process the *source* string instead of a
         file. You must still pass the relative *path* from the root as the
         second argument, so that we know which plugins to apply. Return a
         Code::TidyAll::Result object.
 
-    plugins_for_path (path)
+    plugins_for_path (*path*)
         Given a relative *path* from the root, return a list of
         Code::TidyAll::Plugin objects that apply to it, or an empty list if
         no plugins apply.
 
-    find_conf_file (start_dir)
+    find_conf_file (*conf_names*, *start_dir*)
         Class method. Start in the *start_dir* and work upwards, looking for
-        a `tidyall.ini'. Return the pathname if found or throw an error if
-        not found.
+        one of the *conf_names*. Return the pathname if found or throw an
+        error if not found.
 
 SEE ALSO
     Code::TidyAll

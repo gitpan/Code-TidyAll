@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Git;
 BEGIN {
-  $Code::TidyAll::t::Git::VERSION = '0.11';
+  $Code::TidyAll::t::Git::VERSION = '0.12';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr capture);
 use Code::TidyAll::Git::Util qw(git_uncommitted_files);
@@ -117,6 +117,28 @@ sub test_git : Tests {
     $output = capture_stderr { system( "git", "push" ) };
     like( $output, qr/master -> master/, "master -> master" );
     $pushed->();
+
+    # Unfix file and commit
+    #
+    write_file( "$clone_dir/foo.txt", "def" );
+    run( "git", "commit", "-m", "changed", "-a" );
+    $committed->();
+
+    # Try #1: make sure we get error back
+    #
+    $unpushed->();
+    $output = capture_stderr { system( "git", "push" ) };
+    like( $output, qr/needs tidying/, "needs tidying" );
+    $unpushed->();
+
+    # Try #2: make sure we get error and repeat notification back
+    #
+    $unpushed->();
+    $output = capture_stderr { system( "git", "push" ) };
+    like( $output, qr/needs tidying/, "needs tidying" );
+    like( $output, qr/Identical push seen 2 times/, "Identical push seen 2 times" );
+    $unpushed->();
+
 }
 
 $precommit_hook_template = '#!/usr/bin/perl
