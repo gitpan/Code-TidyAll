@@ -52,7 +52,6 @@ lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
 lib/Test/Code/TidyAll.pm
 t/Basic.t
 t/Conf.t
-t/Util.t
 t/Zglob.t
 t/author-Git.t
 t/author-Plugin-JSBeautify.t
@@ -65,4 +64,5 @@ t/author-Plugin-PodChecker.t
 t/author-Plugin-PodSpell.t
 t/author-Plugin-PodTidy.t
 t/author-SVN.t
+t/author-Util.t
 t/author-tidy-and-critic.t

@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::JSLint;
 BEGIN {
-  $Code::TidyAll::t::Plugin::JSLint::VERSION = '0.12';
+  $Code::TidyAll::t::Plugin::JSLint::VERSION = '0.13';
 }
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';

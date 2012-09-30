@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::t::Plugin::PerlTidy::VERSION = '0.12';
+  $Code::TidyAll::t::Plugin::PerlTidy::VERSION = '0.13';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 

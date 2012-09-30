@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Conf;
 BEGIN {
-  $Code::TidyAll::t::Conf::VERSION = '0.12';
+  $Code::TidyAll::t::Conf::VERSION = '0.13';
 }
 use Code::TidyAll;
 use Code::TidyAll::Util qw(dirname tempdir_simple write_file);

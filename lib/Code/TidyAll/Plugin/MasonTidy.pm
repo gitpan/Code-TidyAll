@@ -1,9 +1,9 @@
 package Code::TidyAll::Plugin::MasonTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.12';
+  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.13';
 }
-use Capture::Tiny qw(capture_merged);
 use Mason::Tidy;
+use Mason::Tidy::App;
 use Moo;
 use Text::ParseWords qw(shellwords);
 extends 'Code::TidyAll::Plugin';
@@ -13,14 +13,9 @@ sub _build_cmd { 'masontidy' }
 sub transform_source {
     my ( $self, $source ) = @_;
 
-    my %params;
-    my $argv_list = [ shellwords( $self->argv ) ];
-    my $opts_good;
-    my $output = capture_merged { $opts_good = Mason::Tidy->get_options( $argv_list, \%params ) };
-    die $output if !$opts_good;
-    die sprintf( "unrecognized arguments '%s'", join( " ", @$argv_list ) ) if @$argv_list;
-    my $mt   = Mason::Tidy->new(%params);
-    my $dest = $mt->tidy($source);
+    local @ARGV = shellwords( $self->argv );
+    local $ENV{MASONTIDY_OPT};
+    my $dest = Mason::Tidy::App->run($source);
     return $dest;
 }
 
@@ -36,7 +31,7 @@ Code::TidyAll::Plugin::MasonTidy - use masontidy with tidyall
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 SYNOPSIS
 

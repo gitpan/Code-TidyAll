@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::ReverseFoo;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::ReverseFoo::VERSION = '0.12';
+  $Code::TidyAll::Test::Plugin::ReverseFoo::VERSION = '0.13';
 }
 use Code::TidyAll::Util qw(read_file write_file);
 use Moo;

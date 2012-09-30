@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::UpperText;
 BEGIN {
-  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.12';
+  $Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.13';
 }
 use Moo;
 extends 'Code::TidyAll::Plugin';
