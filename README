@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.13
+    version 0.14
 
 SYNOPSIS
         use Code::TidyAll;
@@ -99,10 +99,11 @@ METHODS
         *   Return a Code::TidyAll::Result object
 
     process_source (*source*, *path*)
-        Same as process_file, but process the *source* string instead of a
-        file. You must still pass the relative *path* from the root as the
-        second argument, so that we know which plugins to apply. Return a
-        Code::TidyAll::Result object.
+        Like process_file, but process the *source* string instead of a
+        file, and do not read from or write to the cache. You must still
+        pass the relative *path* from the root as the second argument, so
+        that we know which plugins to apply. Return a Code::TidyAll::Result
+        object.
 
     plugins_for_path (*path*)
         Given a relative *path* from the root, return a list of

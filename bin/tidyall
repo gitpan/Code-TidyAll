@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+use Config;
 use Cwd qw(cwd realpath);
 use Getopt::Long;
 use Capture::Tiny qw(capture_merged);
@@ -9,13 +10,16 @@ use warnings;
 
 my $usage = '
 Usage: tidyall [options] [file] ...
+See https://metacpan.org/module/tidyall for full documentation.
 
+Options:
    -a, --all                Process all files in project
    -g, --git                Process all added/modified files according to git
    -h, --help               Print help message
    -l, --list               List each file along with the plugins it matches
    -m, --mode               Mode (e.g. "editor", "commit") - affects which plugins run
-   -p path, --pipe path     Read from STDIN, output to STDOUT/STDERR
+   -p <path>, --pipe <path> Read from STDIN, output to STDOUT/STDERR
+   -r, --recursive          Descend recursively into directories listed on command line
    -s, --svn                Process all added/modified files according to svn
    -q, --quiet              Suppress output except for errors
    -v, --verbose            Show extra output
@@ -32,7 +36,14 @@ Usage: tidyall [options] [file] ...
    --refresh-cache          Erase any existing cache info before processing each file
    --root-dir               Specify root directory explicitly
    --tidyall-class <class>  Subclass to use instead of Code::TidyAll
+   --version                Show version
 ';
+
+sub version {
+    my $version = $Code::TidyAll::VERSION || 'unknown';
+    print "tidyall $version on perl $] built for $Config{archname}\n";
+    exit;
+}
 
 sub usage {
     print $usage;
@@ -40,8 +51,8 @@ sub usage {
 }
 
 my (
-    %params, $all_files, $conf_file, $conf_name, $git_files,
-    $help,   $inc_dirs,  $list,      $pipe,      $svn_files
+    %params,   $all_files, $conf_file, $conf_name, $git_files, $help,
+    $inc_dirs, $list,      $pipe,      $svn_files, $version
 );
 my @conf_names = Code::TidyAll->default_conf_names;
 
@@ -57,18 +68,21 @@ GetOptions(
     'refresh-cache'   => \$params{refresh_cache},
     'root-dir=s'      => \$params{root_dir},
     'tidyall-class=s' => \$params{tidyall_class},
+    'version'         => \$version,
     'a|all'           => \$all_files,
     'g|git'           => \$git_files,
     'h|help'          => \$help,
     'l|list'          => \$list,
     'm|mode=s'        => \$params{mode},
     'p|pipe=s'        => \$pipe,
+    'r|recursive'     => \$params{recursive},
     's|svn'           => \$svn_files,
     'q|quiet'         => \$params{quiet},
     'v|verbose'       => \$params{verbose},
     'I'               => \$inc_dirs,
 ) or usage();
-usage() if $help;
+version() if $version;
+usage()   if $help;
 @conf_names = ($conf_name) if defined($conf_name);
 
 unshift( @INC, split( /\s*,\s*/, $inc_dirs ) ) if defined($inc_dirs);
@@ -143,10 +157,12 @@ sub handle_pipe {
     print STDERR $output;
 
     if ( my $error = $result->error ) {
+        print $source;    # Error already printed above
         return 1;
     }
     elsif ( $result->state eq 'no_match' ) {
-        print STDERR "No match for '$pipe'";
+        print $source;
+        print STDERR "No plugins apply for '$pipe' in config";
         return 1;
     }
     elsif ( $result->state eq 'checked' ) {
@@ -171,7 +187,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 
@@ -191,14 +207,14 @@ version 0.13
     #
     % tidyall -a
 
-    # Process all files in a particular project
-    #
-    % tidyall -a --root-dir /home/joe/project
-
     # Process one or more specific files,
     # look upwards from the first file for conf file
     #
     % tidyall file [file...]
+
+    # Process a directory recursively
+    #
+    % tidyall -r dir
 
 =head1 DESCRIPTION
 
@@ -332,7 +348,7 @@ Apply C<PodTidy> with default settings to all *.pm and *.pod files underneath
 
 =over
 
-=item [class]
+=item [class] or [class description]
 
 The header of each section refers to a tidyall I<plugin>. The name is
 automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins with a
@@ -345,6 +361,26 @@ automatically prefixed with C<Code::TidyAll::Plugin::> unless it begins with a
     ; Uses plugin My::TidyAll::Plugin
     ;
     [+My::TidyAll::Plugin]
+
+You can also include an optional description after the class. The description
+will be ignored and only the first word will be used for the plugin. This
+allows you to a list a plugin more than once, with different configuration each
+time.  For example, two different C<PerlCritic> configurations:
+
+    ; Be brtual on libraries
+    ;
+    [PerlCritic strict]
+    select = lib/**/*.pm
+    argv = --brutal
+
+    ; but gentle on scripts
+    ;
+    [PerlCritic lenient]
+    select = bin/**/*.pl
+    argv = --gentle
+
+Warning: If you simply list the same plugin twice with no description (or the
+same description), one of them will be silently ignored.
 
 =item select
 
@@ -406,6 +442,15 @@ arguments to pass to the underlying command-line utility.
 
 =back
 
+=head1 PLUGIN ORDER AND ATOMICITY
+
+If multiple plugins match a file, tidiers are applied before validators so that
+validators are checking the final result. Within those two groups, the plugins
+are applied in alphabetical order by plugin name/description.
+
+The application of multiple plugins is all-or-nothing. If an error occurs
+during the application of any plugin, the file is not modified at all.
+
 =head1 COMMAND-LINE OPTIONS
 
 =over
@@ -442,14 +487,11 @@ L</MODES>.
 
 =item -p path, --pipe path
 
-Read content from STDIN instead of from a file. This option takes a filename
-argument, relative or absolute, which will be used to determine which plugins
-to apply and also where to start looking upwards for the configuration file.
-The file will not actually be read and does need even need to exist.
-
-If an error occurs, it will be output to STDERR and tidyall will exit with
-status 1. Otherwise, the tidied content will be output to STDOUT and tidyall
-will exit with status 0.
+Read content from STDIN and write the resulting content to STDOUT.  If
+successful, tidyall exits with status 0. If an error occurs, tidyall outputs
+the error message to STDERR, I<mirrors the input content> to STDOUT with no
+changes, and exits with status 1. The mirroring means that you can safely pipe
+to your destination regardless of whether an error occurs.
 
 When specifying this option you must specify exactly one filename, relative or
 absolute, which will be used to determine which plugins to apply and also where
@@ -464,6 +506,12 @@ result).
     # for some/path.pl (which need not exist)
     #
     % tidyall --pipe some/path.pl
+
+=item -r, --recursive
+
+Recursively enter any directories listed on the command-line and process all
+the files within. By default, directories encountered on the command-line will
+generate a warning.
 
 =item -s, --svn
 
@@ -659,8 +707,13 @@ You can turn off backups with C<--no-backups>.
 =item *
 
 L<etc/editors/tidyall.el|https://raw.github.com/jonswar/perl-code-tidyall/master/etc/editors/tidyall.el>
-in this distribution is an Emacs function that runs C<tidyall> on the current
-buffer. You can assign this to C<ctrl-t> or your favorite key binding.
+and
+L<etc/editors/tidyall.vim|https://raw.github.com/jonswar/perl-code-tidyall/master/etc/editors/tidyall.vim>
+in this distribution contains Emacs and Vim commands for running C<tidyall> on
+the current buffer. You can assign this to the keystroke of your choice (e.g. 
+ctrl-t or ,t).
+
+=item *
 
 =item *
 

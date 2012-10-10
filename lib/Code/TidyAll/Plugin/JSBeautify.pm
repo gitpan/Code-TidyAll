@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSBeautify;
 BEGIN {
-  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.13';
+  $Code::TidyAll::Plugin::JSBeautify::VERSION = '0.14';
 }
 use IPC::System::Simple qw(run);
 use Moo;
@@ -32,7 +32,7 @@ Code::TidyAll::Plugin::JSBeautify - use js-beautify with tidyall
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 

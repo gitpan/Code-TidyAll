@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin;
 BEGIN {
-  $Code::TidyAll::t::Plugin::VERSION = '0.13';
+  $Code::TidyAll::t::Plugin::VERSION = '0.14';
 }
 use Capture::Tiny qw(capture);
 use Code::TidyAll::Util qw(tempdir_simple);

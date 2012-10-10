@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PerlCritic;
 BEGIN {
-  $Code::TidyAll::t::Plugin::PerlCritic::VERSION = '0.13';
+  $Code::TidyAll::t::Plugin::PerlCritic::VERSION = '0.14';
 }
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';

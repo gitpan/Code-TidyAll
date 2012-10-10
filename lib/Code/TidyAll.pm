@@ -1,12 +1,12 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.13';
+  $Code::TidyAll::VERSION = '0.14';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
 use Code::TidyAll::Cache;
 use Code::TidyAll::Util
-  qw(abs2rel basename can_load dirname dump_one_line mkpath read_file rel2abs tempdir_simple uniq write_file);
+  qw(abs2rel basename can_load dirname dump_one_line mkpath read_dir read_file rel2abs tempdir_simple uniq write_file);
 use Code::TidyAll::Result;
 use Date::Format;
 use Digest::SHA1 qw(sha1_hex);
@@ -32,6 +32,7 @@ has 'no_cache'      => ( is => 'ro' );
 has 'output_suffix' => ( is => 'ro', default => sub { '' } );
 has 'plugins'       => ( is => 'ro', required => 1 );
 has 'quiet'         => ( is => 'ro' );
+has 'recursive'     => ( is => 'ro' );
 has 'refresh_cache' => ( is => 'ro' );
 has 'root_dir'      => ( is => 'ro', required => 1 );
 has 'verbose'       => ( is => 'ro' );
@@ -84,10 +85,13 @@ sub _build_plugins_for_mode {
 
 sub _build_plugin_objects {
     my $self = shift;
-    return [
-        map { $self->_load_plugin( $_, $self->plugins->{$_} ) }
-        sort keys( %{ $self->plugins_for_mode } )
-    ];
+    my @plugin_objects =
+      map { $self->_load_plugin( $_, $self->plugins->{$_} ) } keys( %{ $self->plugins_for_mode } );
+
+    # Sort tidiers before validators, then alphabetical
+    #
+    return [ sort { ( $a->is_validator <=> $b->is_validator ) || ( $a->name cmp $b->name ) }
+          @plugin_objects ];
 }
 
 sub BUILD {
@@ -140,19 +144,25 @@ sub new_from_conf_file {
 
 sub _load_plugin {
     my ( $self, $plugin_name, $plugin_conf ) = @_;
-    my $class_name = (
-        $plugin_name =~ /^\+/
-        ? substr( $plugin_name, 1 )
-        : "Code::TidyAll::Plugin::$plugin_name"
+
+    # Extract first name in case there is a description
+    #
+    my ($plugin_fname) = ( $plugin_name =~ /^(\S+)/ );
+
+    my $plugin_class = (
+        $plugin_fname =~ /^\+/
+        ? substr( $plugin_fname, 1 )
+        : "Code::TidyAll::Plugin::$plugin_fname"
     );
     try {
-        can_load($class_name) || die "not found";
+        can_load($plugin_class) || die "not found";
     }
     catch {
-        die "could not load plugin class '$class_name': $_";
+        die "could not load plugin class '$plugin_class': $_";
     };
 
-    return $class_name->new(
+    return $plugin_class->new(
+        class   => $plugin_class,
         name    => $plugin_name,
         tidyall => $self,
         %$plugin_conf
@@ -180,13 +190,14 @@ sub process_all {
 sub process_files {
     my ( $self, @files ) = @_;
 
-    return map { $self->process_file( realpath($_) ) } @files;
+    return map { $self->process_file( realpath($_) || rel2abs($_) ) } @files;
 }
 
 sub list_files {
     my ( $self, @files ) = @_;
 
     foreach my $file (@files) {
+        $file = realpath($file) || rel2abs($file);
         my $path = $self->_small_path($file);
         if ( my @plugins = $self->plugins_for_path($path) ) {
             printf( "%s (%s)\n", $path, join( ", ", map { $_->name } @plugins ) );
@@ -196,8 +207,22 @@ sub list_files {
 
 sub process_file {
     my ( $self, $file ) = @_;
+    my $path = $self->_small_path($file);
 
-    my $path      = $self->_small_path($file);
+    if ( -d $file ) {
+        if ( $self->recursive ) {
+            return $self->process_dir($file);
+        }
+        else {
+            print "$path: is a directory (try -r/--recursive)";
+            return;
+        }
+    }
+    elsif ( !-f $file ) {
+        print "$path: not a file or directory\n";
+        return;
+    }
+
     my $cache     = $self->no_cache ? undef : $self->cache;
     my $cache_key = "sig/$path";
     my $contents  = my $orig_contents = read_file($file);
@@ -221,6 +246,14 @@ sub process_file {
     $cache->set( $cache_key, $self->_file_sig( $file, $contents ) ) if $cache && $result->ok;
 
     return $result;
+}
+
+sub process_dir {
+    my ( $self, $dir ) = @_;
+
+    foreach my $subfile ( read_dir($dir) ) {
+        $self->process_file("$dir/$subfile");
+    }
 }
 
 sub process_source {
@@ -459,7 +492,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.13
+version 0.14
 
 =head1 SYNOPSIS
 
@@ -600,10 +633,10 @@ Return a L<Code::TidyAll::Result|Code::TidyAll::Result> object
 
 =item process_source (I<source>, I<path>)
 
-Same as L</process_file>, but process the I<source> string instead of a file.
-You must still pass the relative I<path> from the root as the second argument,
-so that we know which plugins to apply. Return a
-L<Code::TidyAll::Result|Code::TidyAll::Result> object.
+Like L</process_file>, but process the I<source> string instead of a file, and
+do not read from or write to the cache. You must still pass the relative
+I<path> from the root as the second argument, so that we know which plugins to
+apply. Return a L<Code::TidyAll::Result|Code::TidyAll::Result> object.
 
 =item plugins_for_path (I<path>)
 

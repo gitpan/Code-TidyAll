@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Basic;
 BEGIN {
-  $Code::TidyAll::t::Basic::VERSION = '0.13';
+  $Code::TidyAll::t::Basic::VERSION = '0.14';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(dirname mkpath pushd read_file tempdir_simple write_file);
@@ -13,6 +13,9 @@ sub test_plugin { "+Code::TidyAll::Test::Plugin::$_[0]" }
 my %UpperText  = ( test_plugin('UpperText')  => { select => '**/*.txt' } );
 my %ReverseFoo = ( test_plugin('ReverseFoo') => { select => '**/foo*' } );
 my %RepeatFoo  = ( test_plugin('RepeatFoo')  => { select => '**/foo*' } );
+my %CheckUpper = ( test_plugin('CheckUpper') => { select => '**/*.txt' } );
+my %AToZ       = ( test_plugin('AToZ')       => { select => '**/*.txt' } );
+
 my $cli_conf;
 
 sub create_dir {
@@ -30,6 +33,9 @@ sub create_dir {
 sub tidy {
     my ( $self, %params ) = @_;
     my $desc = $params{desc};
+    if ( !defined($desc) ) {
+        ($desc) = ( ( caller(1) )[3] =~ /([^:]+$)/ );
+    }
 
     my $root_dir = $self->create_dir( $params{source} );
 
@@ -52,6 +58,9 @@ sub tidy {
     }
     while ( my ( $path, $content ) = each( %{ $params{dest} } ) ) {
         is( read_file("$root_dir/$path"), $content, "$desc - $path content" );
+    }
+    if ( my $like_output = $params{like_output} ) {
+        like( $output, $like_output, "$desc - output" );
     }
 }
 
@@ -80,8 +89,6 @@ sub test_basic : Tests {
         desc    => 'one file reversals mode',
         options => { mode      => 'reversals' },
     );
-    return;
-
     $self->tidy(
         plugins => { %UpperText, %ReverseFoo },
         source  => {
@@ -105,6 +112,54 @@ sub test_basic : Tests {
         desc    => 'one file UpperText errors',
         errors  => qr/non-alpha content/
     );
+}
+
+sub test_multiple_plugin_instances : Tests {
+    my $self = shift;
+    $self->tidy(
+        plugins => {
+            test_plugin('RepeatFoo for txt') => { select => '**/*.txt', times => 2 },
+            test_plugin('RepeatFoo for foo') => { select => '**/foo.*', times => 3 },
+            %UpperText
+        },
+        source => { "foo.txt" => "abc", "foo.dat" => "def", "bar.txt" => "ghi" },
+        dest   => {
+            "foo.txt" => scalar( "ABC" x 6 ),
+            "foo.dat" => scalar( "def" x 3 ),
+            "bar.txt" => scalar( "GHI" x 2 )
+        }
+    );
+}
+
+sub test_plugin_order_and_atomicity : Tests {
+    my $self    = shift;
+    my @plugins = map {
+        (
+            %ReverseFoo,
+            test_plugin("UpperText $_")  => { select => '**/*.txt' },
+            test_plugin("CheckUpper $_") => { select => '**/*.txt' }
+          )
+    } ( 1 .. 3 );
+    my $output = capture_stdout {
+        $self->tidy(
+            plugins => {@plugins},
+            options => { verbose => 1 },
+            source  => { "foo.txt" => "abc" },
+            dest    => { "foo.txt" => "CBA" },
+            like_output =>
+              qr/.*ReverseFoo, .*UpperText 1, .*UpperText 2, .*UpperText 3, .*CheckUpper 1, .*CheckUpper 2, .*CheckUpper 3/
+        );
+    };
+
+    $self->tidy(
+        plugins => { %AToZ, %ReverseFoo, %CheckUpper },
+        options     => { verbose   => 1 },
+        source      => { "foo.txt" => "abc" },
+        dest        => { "foo.txt" => "abc" },
+        errors      => qr/lowercase found/,
+        like_output => qr/foo.txt (.*ReverseFoo, .*CheckUpper)/
+    );
+
 }
 
 sub test_quiet_and_verbose : Tests {
@@ -240,6 +295,34 @@ sub test_selects_and_ignores : Tests {
         [ test_plugin('UpperText') ] );
 }
 
+sub test_dirs : Tests {
+    my $self = shift;
+
+    my @files = ( "a/foo.txt", "a/bar.txt", "a/bar.pl", "b/foo.txt" );
+    my $root_dir = $self->create_dir( { map { $_ => 'hi' } @files } );
+
+    foreach my $recursive ( 0 .. 1 ) {
+        my $output = capture_stdout {
+            my $ct = Code::TidyAll->new(
+                plugins  => { %UpperText, %ReverseFoo },
+                root_dir => $root_dir,
+                ( $recursive ? ( recursive => 1 ) : () )
+            );
+            $ct->process_file("$root_dir/a");
+        };
+        if ($recursive) {
+            is( $output,                          "[tidied]  a/bar.txt\n[tidied]  a/foo.txt\n" );
+            is( read_file("$root_dir/a/foo.txt"), "IH" );
+            is( read_file("$root_dir/a/bar.txt"), "HI" );
+            is( read_file("$root_dir/a/bar.pl"),  "hi" );
+            is( read_file("$root_dir/b/foo.txt"), "hi" );
+        }
+        else {
+            like( $output, qr/is a directory/ );
+        }
+    }
+}
+
 sub test_errors : Tests {
     my $self = shift;
 
@@ -276,7 +359,10 @@ sub test_errors : Tests {
     qr/unknown options/;
 
     my $ct = Code::TidyAll->new( plugins => {%UpperText}, root_dir => $root_dir );
-    my $output = capture_stdout { $ct->process_files("$root_dir/foo/bar.txt") };
+    my $output = capture_stdout { $ct->process_files("$root_dir/baz/blargh.txt") };
+    like( $output, qr/baz\/blargh.txt: not a file or directory/, "file not found" );
+
+    $output = capture_stdout { $ct->process_files("$root_dir/foo/bar.txt") };
     is( $output, "[tidied]  foo/bar.txt\n", "filename output" );
     is( read_file("$root_dir/foo/bar.txt"), "ABC", "tidied" );
     my $other_dir = realpath( tempdir_simple() );
@@ -286,6 +372,16 @@ sub test_errors : Tests {
 
 sub test_cli : Tests {
     my $self = shift;
+    my $output;
+
+    $output = capture_stdout {
+        system( "$^X", "bin/tidyall", "--version" );
+    };
+    like( $output, qr/tidyall .* on perl/ );
+    $output = capture_stdout {
+        system( "$^X", "bin/tidyall", "--help" );
+    };
+    like( $output, qr/Usage.*Options:/s );
 
     foreach my $conf_name ( "tidyall.ini", ".tidyallrc" ) {
         my $root_dir  = $self->create_dir();
@@ -315,7 +411,7 @@ sub test_cli : Tests {
         is( read_file("$root_dir/subdir/foo.txt"),  "BYEBYEBYE", "foo.txt tidied" );
         is( read_file("$root_dir/subdir/foo2.txt"), "bye",       "foo2.txt not tidied" );
 
-        # Test -p / --pipe
+        # -p / --pipe success
         #
         my ( $stdout, $stderr ) = capture {
             open( my $fh, "|-", "$^X", "bin/tidyall", "-p", "$root_dir/does_not_exist/foo.txt" );
@@ -323,6 +419,15 @@ sub test_cli : Tests {
         };
         is( $stdout, "ECHOECHOECHO", "pipe: stdin tidied" );
         unlike( $stderr, qr/\S/, "pipe: no stderr" );
+
+        # -p / --pipe error
+        #
+        ( $stdout, $stderr ) = capture {
+            open( my $fh, "|-", "$^X", "bin/tidyall", "--pipe", "$root_dir/foo.txt" );
+            print $fh "abc1";
+        };
+        is( $stdout, "abc1", "pipe: stdin mirrored to stdout" );
+        like( $stderr, qr/non-alpha content found/ );
     }
 }
 

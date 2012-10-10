@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Git;
 BEGIN {
-  $Code::TidyAll::t::Git::VERSION = '0.13';
+  $Code::TidyAll::t::Git::VERSION = '0.14';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr capture);
 use Code::TidyAll::Git::Util qw(git_uncommitted_files);
@@ -48,7 +48,7 @@ sub test_git : Tests {
 
     # Add foo.txt, which needs tidying
     #
-    write_file( "$work_dir/foo.txt", "abc" );
+    write_file( "$work_dir/foo.txt", "abc\n" );
     cmp_deeply( [ git_uncommitted_files($work_dir) ], [], "no uncommitted files" );
 
     # git add foo.txt and make sure it is now in uncommitted list
@@ -73,7 +73,7 @@ sub test_git : Tests {
 
     # Fix file and commit successfully
     #
-    write_file( "$work_dir/foo.txt", "ABC" );
+    write_file( "$work_dir/foo.txt", "ABC\n" );
     $output = capture_stderr { run( "git", "commit", "-m", "changed", "-a" ) };
     like( $output, qr/\[checked\] foo\.txt/, "checked foo.txt" );
     $committed->();
@@ -96,7 +96,7 @@ sub test_git : Tests {
 
     # Unfix file and commit
     #
-    write_file( "$clone_dir/foo.txt", "def" );
+    write_file( "$clone_dir/foo.txt", "def\n" );
     run( "git", "commit", "-m", "changed", "-a" );
     $committed->();
 
@@ -111,7 +111,7 @@ sub test_git : Tests {
 
     # Fix file and push successfully
     #
-    write_file( "$clone_dir/foo.txt", "DEF" );
+    write_file( "$clone_dir/foo.txt", "DEF\n" );
     $output = capture_stderr { run( "git", "commit", "-m", "changed", "-a" ) };
     $committed->();
     $output = capture_stderr { system( "git", "push" ) };
@@ -120,7 +120,7 @@ sub test_git : Tests {
 
     # Unfix file and commit
     #
-    write_file( "$clone_dir/foo.txt", "def" );
+    write_file( "$clone_dir/foo.txt", "def\n" );
     run( "git", "commit", "-m", "changed", "-a" );
     $committed->();
 

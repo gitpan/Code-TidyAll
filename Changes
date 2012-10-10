@@ -2,6 +2,19 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.14  Oct 10, 2012
+
+* Improvements
+  - Allow a plugin to be listed multiple times in config with different configuration
+  - Specify order that plugins run (tidiers before validators, then alpha) and document
+    that they are applied atomically
+  - Add etc/editors/tidyall.vim for Vim (Justin Devuyst)
+  - Add -r/--recursive flag to process directories recursively
+  - In -p/--pipe mode, mirror input to output in case of error (Justin Devuyst)
+  - Fix -l/--list handling of local files
+  - Add --version option
+  - Make git prereceive hook more modular, so it can be combined with other checks
+
 0.13  Sep 30, 2012
 
 * Fixes

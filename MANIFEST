@@ -7,6 +7,7 @@ META.yml
 Makefile.PL
 bin/tidyall
 etc/editors/tidyall.el
+etc/editors/tidyall.vim
 lib/Code/TidyAll.pm
 lib/Code/TidyAll/Cache.pm
 lib/Code/TidyAll/Config/INI/Reader.pm
@@ -27,6 +28,8 @@ lib/Code/TidyAll/Result.pm
 lib/Code/TidyAll/SVN/Precommit.pm
 lib/Code/TidyAll/SVN/Util.pm
 lib/Code/TidyAll/Test/Class.pm
+lib/Code/TidyAll/Test/Plugin/AToZ.pm
+lib/Code/TidyAll/Test/Plugin/CheckUpper.pm
 lib/Code/TidyAll/Test/Plugin/RepeatFoo.pm
 lib/Code/TidyAll/Test/Plugin/ReverseFoo.pm
 lib/Code/TidyAll/Test/Plugin/UpperText.pm
