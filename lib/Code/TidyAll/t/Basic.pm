@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Basic;
 BEGIN {
-  $Code::TidyAll::t::Basic::VERSION = '0.14';
+  $Code::TidyAll::t::Basic::VERSION = '0.15';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(dirname mkpath pushd read_file tempdir_simple write_file);
@@ -311,7 +311,8 @@ sub test_dirs : Tests {
             $ct->process_file("$root_dir/a");
         };
         if ($recursive) {
-            is( $output,                          "[tidied]  a/bar.txt\n[tidied]  a/foo.txt\n" );
+            like( $output, qr/\[tidied\]  a\/foo.txt/ );
+            like( $output, qr/\[tidied\]  a\/bar.txt/ );
             is( read_file("$root_dir/a/foo.txt"), "IH" );
             is( read_file("$root_dir/a/bar.txt"), "HI" );
             is( read_file("$root_dir/a/bar.pl"),  "hi" );

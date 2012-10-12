@@ -1,6 +1,6 @@
 package Code::TidyAll::Cache;
 BEGIN {
-  $Code::TidyAll::Cache::VERSION = '0.14';
+  $Code::TidyAll::Cache::VERSION = '0.15';
 }
 use Digest::SHA1 qw(sha1_hex);
 use Code::TidyAll::Util qw(dirname mkpath read_file write_file);

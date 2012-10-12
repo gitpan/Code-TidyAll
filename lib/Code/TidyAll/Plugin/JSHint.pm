@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSHint;
 BEGIN {
-  $Code::TidyAll::Plugin::JSHint::VERSION = '0.14';
+  $Code::TidyAll::Plugin::JSHint::VERSION = '0.15';
 }
 use Code::TidyAll::Util qw(tempdir_simple write_file);
 use Capture::Tiny qw(capture_merged);
@@ -53,7 +53,7 @@ Code::TidyAll::Plugin::JSHint - use jshint with tidyall
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head1 SYNOPSIS
 

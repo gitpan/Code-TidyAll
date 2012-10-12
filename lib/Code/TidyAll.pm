@@ -1,6 +1,6 @@
 package Code::TidyAll;
 BEGIN {
-  $Code::TidyAll::VERSION = '0.14';
+  $Code::TidyAll::VERSION = '0.15';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
@@ -259,6 +259,7 @@ sub process_dir {
 sub process_source {
     my ( $self, $contents, $path ) = @_;
 
+    die "contents and path required" unless defined($contents) && defined($path);
     my @plugins = $self->plugins_for_path($path);
     if ( !@plugins ) {
         $self->msg( "[no plugins apply%s] %s",
@@ -492,7 +493,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.14
+version 0.15
 
 =head1 SYNOPSIS
 

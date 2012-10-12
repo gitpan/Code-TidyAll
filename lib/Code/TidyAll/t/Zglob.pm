@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Zglob;
 BEGIN {
-  $Code::TidyAll::t::Zglob::VERSION = '0.14';
+  $Code::TidyAll::t::Zglob::VERSION = '0.15';
 }
 use File::Zglob;
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';
