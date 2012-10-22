@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin;
 BEGIN {
-  $Code::TidyAll::t::Plugin::VERSION = '0.15';
+  $Code::TidyAll::t::Plugin::VERSION = '0.16';
 }
 use Capture::Tiny qw(capture);
 use Code::TidyAll::Util qw(tempdir_simple);
@@ -29,6 +29,7 @@ sub tidyall {
 
     my $source = $p{source} || die "source required";
     my $desc   = $p{desc}   || $source;
+    $desc =~ s/\n/\\n/g;
     my $plugin_class = $self->plugin_class;
     my %plugin_conf = ( $plugin_class => { select => '*', %{ $p{conf} || {} } } );
     my $ct =

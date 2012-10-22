@@ -1,6 +1,6 @@
 package Code::TidyAll::Result;
 BEGIN {
-  $Code::TidyAll::Result::VERSION = '0.15';
+  $Code::TidyAll::Result::VERSION = '0.16';
 }
 use Moo;
 
@@ -23,7 +23,7 @@ Code::TidyAll::Result - Result returned from processing a file/source
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 

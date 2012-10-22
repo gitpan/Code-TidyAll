@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::MasonTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.15';
+  $Code::TidyAll::Plugin::MasonTidy::VERSION = '0.16';
 }
 use Mason::Tidy;
 use Mason::Tidy::App;
@@ -31,7 +31,7 @@ Code::TidyAll::Plugin::MasonTidy - use masontidy with tidyall
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlTidy;
 BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.15';
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.16';
 }
 use Capture::Tiny qw(capture_merged);
 use Perl::Tidy;
@@ -41,7 +41,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
@@ -50,14 +50,14 @@ version 0.15
    ; Configure in-line
    ;
    [PerlTidy]
-   argv = --noll
    select = lib/**/*.pm
+   argv = --noll
 
    ; or refer to a .perltidyrc in the same directory
    ;
    [PerlTidy]
-   argv = --profile=$ROOT/.perltidyrc
    select = lib/**/*.pm
+   argv = --profile=$ROOT/.perltidyrc
 
 =head1 DESCRIPTION
 

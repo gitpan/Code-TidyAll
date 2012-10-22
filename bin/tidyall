@@ -187,7 +187,7 @@ tidyall - Your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 
@@ -264,6 +264,18 @@ Mason: L<masontidy|Code::TidyAll::Plugin::MasonTidy>
 JavaScript: L<js-beautify|Code::TidyAll::Plugin::JSBeautify>,
 L<jshint|Code::TidyAll::Plugin::JSHint>,
 L<jslint|Code::TidyAll::Plugin::JSLint>
+
+=item *
+
+CSS: L<cssunminifier|Code::TidyAll::Plugin::CSUnminifier>
+
+=item *
+
+PHP: L<phpcs|Code::TidyAll::Plugin::CSUnminifier>
+
+=item *
+
+Misc: L<Code::TidyAll::Plugin::SortLines|Code::TidyAll::Plugin::SortLines>
 
 =back
 

@@ -1,19 +1,17 @@
-package Code::TidyAll::Plugin::JSLint;
+package Code::TidyAll::Plugin::CSSUnminifier;
 BEGIN {
-  $Code::TidyAll::Plugin::JSLint::VERSION = '0.16';
+  $Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.16';
 }
-use Capture::Tiny qw(capture_merged);
+use IPC::System::Simple qw(run);
 use Moo;
 extends 'Code::TidyAll::Plugin';
 
-sub _build_cmd { 'jslint' }
+sub _build_cmd { 'cssunminifier' }
 
-sub validate_file {
+sub transform_file {
     my ( $self, $file ) = @_;
 
-    my $cmd = sprintf( "%s %s %s", $self->cmd, $self->argv, $file );
-    my $output = capture_merged { system($cmd) };
-    die "$output\n" if $output !~ /is OK\./;
+    run( $self->cmd, $self->argv, $file, $file );
 }
 
 1;
@@ -24,7 +22,7 @@ sub validate_file {
 
 =head1 NAME
 
-Code::TidyAll::Plugin::JSLint - use jslint with tidyall
+Code::TidyAll::Plugin::CSUnminifier - use cssunminifier with tidyall
 
 =head1 VERSION
 
@@ -34,20 +32,20 @@ version 0.16
 
    In configuration:
 
-   [JSLint]
-   select = static/**/*.js
-   argv = --white --vars --regex
+   [CSSUnminifier]
+   select = static/**/*.css
+   argv = -w=2
 
 =head1 DESCRIPTION
 
-Runs L<jslint|http://www.jslint.com/>, a JavaScript validator, and dies if any
-problems were found.
+Runs L<cssunminifier|https://npmjs.org/package/cssunminifier>, a simple CSS
+tidier.
 
 =head1 INSTALLATION
 
 Install L<npm|https://npmjs.org/>, then run
 
-    npm install jslint
+    npm install cssunminifier -g
 
 =head1 CONFIGURATION
 
@@ -55,11 +53,11 @@ Install L<npm|https://npmjs.org/>, then run
 
 =item argv
 
-Arguments to pass to jslint
+Arguments to pass to C<cssunminifier>
 
 =item cmd
 
-Full path to jslint
+Full path to C<cssunminifier>
 
 =back
 

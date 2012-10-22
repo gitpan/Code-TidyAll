@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodSpell;
 BEGIN {
-  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.15';
+  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.16';
 }
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
@@ -55,7 +55,7 @@ Code::TidyAll::Plugin::PodSpell - use Pod::Spell + ispell with tidyall
 
 =head1 VERSION
 
-version 0.15
+version 0.16
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Git;
 BEGIN {
-  $Code::TidyAll::t::Git::VERSION = '0.15';
+  $Code::TidyAll::t::Git::VERSION = '0.16';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr capture);
 use Code::TidyAll::Git::Util qw(git_uncommitted_files);
