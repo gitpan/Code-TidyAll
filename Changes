@@ -2,6 +2,15 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.17  Mar 11, 2013
+
+* Improvements
+  - ** Rename API method process_files to more accurate process_paths
+
+* Fixes
+  - Fix recursive processing of directories (Mark Risman)
+  - Improve git precommit setup script - https://github.com/jonswar/perl-code-tidyall/pull/10 (Olaf Anders)
+
 0.16  Oct 22, 2012
 
 * Plugins

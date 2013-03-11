@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodSpell;
-BEGIN {
-  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.17';
 }
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
@@ -45,7 +45,7 @@ sub validate_file {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -55,7 +55,7 @@ Code::TidyAll::Plugin::PodSpell - use Pod::Spell + ispell with tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -130,7 +130,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

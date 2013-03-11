@@ -1,6 +1,6 @@
 package Code::TidyAll::Git::Precommit;
-BEGIN {
-  $Code::TidyAll::Git::Precommit::VERSION = '0.16';
+{
+  $Code::TidyAll::Git::Precommit::VERSION = '0.17';
 }
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
@@ -54,7 +54,7 @@ sub check {
             mode       => 'commit',
             %{ $self->tidyall_options },
         );
-        my @results = $tidyall->process_files( map { "$root_dir/$_" } @files );
+        my @results = $tidyall->process_paths( map { "$root_dir/$_" } @files );
 
         if ( my @error_results = grep { $_->error } @results ) {
             my $error_count = scalar(@error_results);
@@ -71,7 +71,7 @@ sub check {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -82,17 +82,17 @@ tidyall'd
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
   In .git/hooks/pre-commit:
 
-    #!/usr/bin/perl
-    use Code::TidyAll::Git::Precommit;
+    #!/usr/bin/env perl
     use strict;
     use warnings;
-    
+
+    use Code::TidyAll::Git::Precommit;
     Code::TidyAll::Git::Precommit->check();
 
 =head1 DESCRIPTION
@@ -191,10 +191,12 @@ Commit your pre-commit script in C<git/hooks/pre-commit>
 
 =item *
 
-Add a setup script in C<git/setup.pl> containing
+Add a setup script in C<git/setup.sh> containing
 
     #!/bin/bash
-    ln -s git/hooks/pre-commit .git/hooks/pre-commit
+    chmod +x git/hooks/pre-commit
+    cd .git/hooks
+    ln -s ../../git/hooks/pre-commit
 
 =item *
 
@@ -225,7 +227,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

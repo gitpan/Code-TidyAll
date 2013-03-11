@@ -1,6 +1,6 @@
 package Test::Code::TidyAll;
-BEGIN {
-  $Test::Code::TidyAll::VERSION = '0.16';
+{
+  $Test::Code::TidyAll::VERSION = '0.17';
 }
 use IPC::System::Simple qw(run);
 use Code::TidyAll;
@@ -34,7 +34,7 @@ sub tidyall_ok {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -45,7 +45,7 @@ tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -93,7 +93,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

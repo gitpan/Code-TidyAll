@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::MasonTidy;
-BEGIN {
-  $Code::TidyAll::t::Plugin::MasonTidy::VERSION = '0.16';
+{
+  $Code::TidyAll::t::Plugin::MasonTidy::VERSION = '0.17';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 

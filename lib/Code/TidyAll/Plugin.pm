@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin;
-BEGIN {
-  $Code::TidyAll::Plugin::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::VERSION = '0.17';
 }
 use Code::TidyAll::Util qw(basename read_file write_file);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
@@ -142,6 +142,7 @@ sub matches_path {
 
 1;
 
+__END__
 
 =pod
 
@@ -151,7 +152,7 @@ Code::TidyAll::Plugin - Create plugins for tidying or validating code
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -301,7 +302,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

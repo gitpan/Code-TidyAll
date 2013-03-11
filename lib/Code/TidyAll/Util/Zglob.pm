@@ -1,8 +1,8 @@
 # This is a copy of Text::Glob, modified to support "**/"
 #
 package Code::TidyAll::Util::Zglob;
-BEGIN {
-  $Code::TidyAll::Util::Zglob::VERSION = '0.16';
+{
+  $Code::TidyAll::Util::Zglob::VERSION = '0.17';
 }
 use strict;
 use Exporter;

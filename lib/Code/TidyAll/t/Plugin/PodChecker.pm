@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::PodChecker;
-BEGIN {
-  $Code::TidyAll::t::Plugin::PodChecker::VERSION = '0.16';
+{
+  $Code::TidyAll::t::Plugin::PodChecker::VERSION = '0.17';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 
@@ -45,11 +45,12 @@ sub test_main : Tests {
 1;
 
 __END__
+
 =pod
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SEE ALSO
 
@@ -67,4 +68,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

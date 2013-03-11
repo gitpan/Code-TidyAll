@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlTidy;
-BEGIN {
-  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::PerlTidy::VERSION = '0.17';
 }
 use Capture::Tiny qw(capture_merged);
 use Perl::Tidy;
@@ -31,7 +31,7 @@ sub transform_source {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -41,7 +41,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -95,7 +95,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

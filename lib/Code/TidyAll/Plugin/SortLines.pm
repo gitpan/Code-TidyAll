@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::SortLines;
-BEGIN {
-  $Code::TidyAll::Plugin::SortLines::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::SortLines::VERSION = '0.17';
 }
 use Moo;
 extends 'Code::TidyAll::Plugin';
@@ -13,7 +13,7 @@ sub transform_source {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -23,7 +23,7 @@ Code::TidyAll::Plugin::SortLines - sort lines of a file
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -54,7 +54,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

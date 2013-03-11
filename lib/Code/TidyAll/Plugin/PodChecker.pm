@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodChecker;
-BEGIN {
-  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.17';
 }
 use Capture::Tiny qw(capture_merged);
 use Pod::Checker;
@@ -23,7 +23,7 @@ sub validate_file {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -33,7 +33,7 @@ Code::TidyAll::Plugin::PodChecker - use podchecker with tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -88,7 +88,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

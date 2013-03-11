@@ -4,7 +4,7 @@
       "Jonathan Swartz <swartz@pobox.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.200008, CPAN::Meta::Converter version 2.113640",
+   "generated_by" : "Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -31,30 +31,30 @@
       "runtime" : {
          "requires" : {
             "Capture::Tiny" : "0.12",
-            "Config::INI::Reader" : 0,
-            "Date::Format" : 0,
-            "Digest::SHA1" : 0,
-            "File::Basename" : 0,
-            "File::Find" : 0,
-            "File::Path" : 0,
-            "File::Temp" : 0,
-            "File::Zglob" : 0,
-            "Getopt::Long" : 0,
-            "Guard" : 0,
-            "IPC::Run3" : 0,
+            "Config::INI::Reader" : "0",
+            "Date::Format" : "0",
+            "Digest::SHA1" : "0",
+            "File::Basename" : "0",
+            "File::Find" : "0",
+            "File::Path" : "0",
+            "File::Temp" : "0",
+            "File::Zglob" : "0",
+            "Getopt::Long" : "0",
+            "Guard" : "0",
+            "IPC::Run3" : "0",
             "IPC::System::Simple" : "0.15",
-            "List::MoreUtils" : 0,
-            "Log::Any" : 0,
+            "List::MoreUtils" : "0",
+            "Log::Any" : "0",
             "Moo" : "0.0091010",
-            "Scalar::Util" : 0,
-            "Text::ParseWords" : 0,
-            "Time::Duration::Parse" : 0,
-            "Try::Tiny" : 0
+            "Scalar::Util" : "0",
+            "Text::ParseWords" : "0",
+            "Time::Duration::Parse" : "0",
+            "Try::Tiny" : "0"
          }
       },
       "test" : {
          "requires" : {
-            "Test::Class::Most" : 0
+            "Test::Class::Most" : "0"
          }
       }
    },
@@ -70,6 +70,6 @@
          "web" : "https://github.com/jonswar/perl-code-tidyall"
       }
    },
-   "version" : "0.16"
+   "version" : "0.17"
 }
 

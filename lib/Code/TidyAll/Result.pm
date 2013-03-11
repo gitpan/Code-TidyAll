@@ -1,6 +1,6 @@
 package Code::TidyAll::Result;
-BEGIN {
-  $Code::TidyAll::Result::VERSION = '0.16';
+{
+  $Code::TidyAll::Result::VERSION = '0.17';
 }
 use Moo;
 
@@ -13,7 +13,7 @@ sub ok { return $_[0]->state ne 'error' }
 
 1;
 
-
+__END__
 
 =pod
 
@@ -23,7 +23,7 @@ Code::TidyAll::Result - Result returned from processing a file/source
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -38,7 +38,7 @@ version 0.16
 Represents the result of
 L<Code::TidyAll::process_file|Code::TidyAll/process_file> and
 L<Code::TidyAll::process_file|Code::TidyAll/process_source>. A list of these is
-returned from L<Code::TidyAll::process_files|Code::TidyAll/process_files>.
+returned from L<Code::TidyAll::process_paths|Code::TidyAll/process_paths>.
 
 =head1 METHODS
 
@@ -96,7 +96,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

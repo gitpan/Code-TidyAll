@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.16
+    version 0.17
 
 SYNOPSIS
         use Code::TidyAll;
@@ -28,11 +28,7 @@ SYNOPSIS
 
         # then...
 
-        $ct->process_files($file1, $file2);
-
-        # or
-
-        $ct->process_all();
+        $ct->process_paths($file1, $file2);
 
 DESCRIPTION
     This is the engine used by tidyall - read that first to get an overview.
@@ -77,11 +73,9 @@ CONSTRUCTION
         option becomes `backup_ttl' here).
 
 METHODS
-    process_all
-        Process all files; this implements the `tidyall -a' option.
-
-    process_files (file, ...)
-        Call process_file on each file. Return a list of
+    process_paths (path, ...)
+        Call process_file on each file; descend recursively into each
+        directory if the `recursive' flag is on. Return a list of
         Code::TidyAll::Result objects, one for each file.
 
     process_file (file)
@@ -114,6 +108,10 @@ METHODS
         Class method. Start in the *start_dir* and work upwards, looking for
         one of the *conf_names*. Return the pathname if found or throw an
         error if not found.
+
+    find_matched_files
+        Returns a list of sorted files that match at least one plugin in
+        configuration.
 
 SEE ALSO
     Code::TidyAll

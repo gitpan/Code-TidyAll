@@ -9,45 +9,45 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'Tidy and validate code in many ways at once',
-  'AUTHOR' => 'Jonathan Swartz <swartz@pobox.com>',
-  'BUILD_REQUIRES' => {
-    'Test::Class::Most' => '0'
+  "ABSTRACT" => "Tidy and validate code in many ways at once",
+  "AUTHOR" => "Jonathan Swartz <swartz\@pobox.com>",
+  "BUILD_REQUIRES" => {
+    "Test::Class::Most" => 0
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.30'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'Code-TidyAll',
-  'EXE_FILES' => [
-    'bin/tidyall'
+  "DISTNAME" => "Code-TidyAll",
+  "EXE_FILES" => [
+    "bin/tidyall"
   ],
-  'LICENSE' => 'perl',
-  'NAME' => 'Code::TidyAll',
-  'PREREQ_PM' => {
-    'Capture::Tiny' => '0.12',
-    'Config::INI::Reader' => '0',
-    'Date::Format' => '0',
-    'Digest::SHA1' => '0',
-    'File::Basename' => '0',
-    'File::Find' => '0',
-    'File::Path' => '0',
-    'File::Temp' => '0',
-    'File::Zglob' => '0',
-    'Getopt::Long' => '0',
-    'Guard' => '0',
-    'IPC::Run3' => '0',
-    'IPC::System::Simple' => '0.15',
-    'List::MoreUtils' => '0',
-    'Log::Any' => '0',
-    'Moo' => '0.0091010',
-    'Scalar::Util' => '0',
-    'Text::ParseWords' => '0',
-    'Time::Duration::Parse' => '0',
-    'Try::Tiny' => '0'
+  "LICENSE" => "perl",
+  "NAME" => "Code::TidyAll",
+  "PREREQ_PM" => {
+    "Capture::Tiny" => "0.12",
+    "Config::INI::Reader" => 0,
+    "Date::Format" => 0,
+    "Digest::SHA1" => 0,
+    "File::Basename" => 0,
+    "File::Find" => 0,
+    "File::Path" => 0,
+    "File::Temp" => 0,
+    "File::Zglob" => 0,
+    "Getopt::Long" => 0,
+    "Guard" => 0,
+    "IPC::Run3" => 0,
+    "IPC::System::Simple" => "0.15",
+    "List::MoreUtils" => 0,
+    "Log::Any" => 0,
+    "Moo" => "0.0091010",
+    "Scalar::Util" => 0,
+    "Text::ParseWords" => 0,
+    "Time::Duration::Parse" => 0,
+    "Try::Tiny" => 0
   },
-  'VERSION' => '0.16',
-  'test' => {
-    'TESTS' => 't/*.t'
+  "VERSION" => "0.17",
+  "test" => {
+    "TESTS" => "t/*.t"
   }
 );
 

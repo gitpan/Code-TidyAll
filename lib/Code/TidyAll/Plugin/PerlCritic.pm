@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PerlCritic;
-BEGIN {
-  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::PerlCritic::VERSION = '0.17';
 }
 use Capture::Tiny qw(capture_merged);
 use Moo;
@@ -18,7 +18,7 @@ sub validate_file {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -28,7 +28,7 @@ Code::TidyAll::Plugin::PerlCritic - use perlcritic with tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -83,7 +83,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::JSHint;
-BEGIN {
-  $Code::TidyAll::Plugin::JSHint::VERSION = '0.16';
+{
+  $Code::TidyAll::Plugin::JSHint::VERSION = '0.17';
 }
 use Code::TidyAll::Util qw(tempdir_simple write_file);
 use Capture::Tiny qw(capture_merged);
@@ -43,7 +43,7 @@ sub validate_file {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -53,7 +53,7 @@ Code::TidyAll::Plugin::JSHint - use jshint with tidyall
 
 =head1 VERSION
 
-version 0.16
+version 0.17
 
 =head1 SYNOPSIS
 
@@ -132,7 +132,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-
