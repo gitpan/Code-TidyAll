@@ -1,6 +1,6 @@
 package Test::Code::TidyAll;
 {
-  $Test::Code::TidyAll::VERSION = '0.17';
+  $Test::Code::TidyAll::VERSION = '0.18';
 }
 use IPC::System::Simple qw(run);
 use Code::TidyAll;
@@ -15,9 +15,10 @@ our @EXPORT_OK = qw(tidyall_ok);
 our @EXPORT    = @EXPORT_OK;
 
 sub tidyall_ok {
-    my $conf_file = Code::TidyAll->find_conf_file(".");
-    my $ct    = Code::TidyAll->new( check_only => 1, conf_file => $conf_file, mode => 'test', @_ );
-    my @files = sort keys( %{ $ct->matched_files } );
+    my @conf_names = Code::TidyAll->default_conf_names;
+    my $conf_file = Code::TidyAll->find_conf_file( \@conf_names, "." );
+    my $ct    = Code::TidyAll->new_from_conf_file( $conf_file, check_only => 1, mode => 'test' );
+    my @files = $ct->find_matched_files;
     $test->plan( tests => scalar(@files) );
     foreach my $file (@files) {
         my $desc   = $ct->_small_path($file);
@@ -45,7 +46,7 @@ tidyall
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

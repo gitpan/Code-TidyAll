@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PHPCodeSniffer;
 {
-  $Code::TidyAll::Plugin::PHPCodeSniffer::VERSION = '0.17';
+  $Code::TidyAll::Plugin::PHPCodeSniffer::VERSION = '0.18';
 }
 use IPC::System::Simple qw(runx EXIT_ANY);
 use Capture::Tiny qw(capture_merged);
@@ -33,7 +33,7 @@ Code::TidyAll::Plugin::PHPCodeSniffer - use phpcs with tidyall
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

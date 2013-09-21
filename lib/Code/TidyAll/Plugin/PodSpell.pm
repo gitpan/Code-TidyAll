@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodSpell;
 {
-  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.17';
+  $Code::TidyAll::Plugin::PodSpell::VERSION = '0.18';
 }
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
@@ -23,8 +23,9 @@ sub validate_file {
 
     my ($output);
     my @cmd = ( $self->ispell_cmd, shellwords( $self->ispell_argv ), "-a" );
-    run3( \@cmd, \$text, \$output, \$error );
-    die $error if $error;
+    eval { run3( \@cmd, \$text, \$output, \$error ) };
+    $error = $@ if $@;
+    die "error running '" . join( " ", @cmd ) . "': " . $error if $error;
 
     my ( @errors, %seen );
     foreach my $line ( split( "\n", $output ) ) {
@@ -55,7 +56,7 @@ Code::TidyAll::Plugin::PodSpell - use Pod::Spell + ispell with tidyall
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

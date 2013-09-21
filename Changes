@@ -2,6 +2,12 @@ Revision history for Code-TidyAll
 
 ** denotes an incompatible change
 
+0.18  Sep 21, 2013
+
+* Fixes
+  - Fix Test::Code::TidyAll::tidyall_ok - https://github.com/jonswar/perl-code-tidyall/issues/12 (Adam Taylor)
+  - Fix JSBeautify plugin as js-beautify no longer respects --replace
+
 0.17  Mar 11, 2013
 
 * Improvements

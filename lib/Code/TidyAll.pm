@@ -1,6 +1,6 @@
 package Code::TidyAll;
 {
-  $Code::TidyAll::VERSION = '0.17';
+  $Code::TidyAll::VERSION = '0.18';
 }
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
@@ -492,7 +492,7 @@ Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin::PodChecker;
 {
-  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.17';
+  $Code::TidyAll::Plugin::PodChecker::VERSION = '0.18';
 }
 use Capture::Tiny qw(capture_merged);
 use Pod::Checker;
@@ -33,7 +33,7 @@ Code::TidyAll::Plugin::PodChecker - use podchecker with tidyall
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

@@ -59,6 +59,7 @@ lib/Code/TidyAll/t/Util.pm
 lib/Code/TidyAll/t/Zglob.pm
 lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
 lib/Test/Code/TidyAll.pm
+perltidy.LOG
 t/Basic.t
 t/Conf.t
 t/Zglob.t
@@ -68,7 +69,6 @@ t/author-Plugin-JSBeautify.t
 t/author-Plugin-JSHint.t
 t/author-Plugin-JSLint.t
 t/author-Plugin-MasonTidy.t
-t/author-Plugin-PHPCodeSniffer.t
 t/author-Plugin-PerlCritic.t
 t/author-Plugin-PerlTidy.t
 t/author-Plugin-PodChecker.t
@@ -78,3 +78,4 @@ t/author-Plugin-SortLines.t
 t/author-SVN.t
 t/author-Util.t
 t/author-tidy-and-critic.t
+xt/tidyall.t

@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::AToZ;
 {
-  $Code::TidyAll::Test::Plugin::AToZ::VERSION = '0.17';
+  $Code::TidyAll::Test::Plugin::AToZ::VERSION = '0.18';
 }
 use Moo;
 extends 'Code::TidyAll::Plugin';

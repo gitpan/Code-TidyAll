@@ -1,6 +1,6 @@
 package Code::TidyAll::Test::Plugin::CheckUpper;
 {
-  $Code::TidyAll::Test::Plugin::CheckUpper::VERSION = '0.17';
+  $Code::TidyAll::Test::Plugin::CheckUpper::VERSION = '0.18';
 }
 use Moo;
 extends 'Code::TidyAll::Plugin';

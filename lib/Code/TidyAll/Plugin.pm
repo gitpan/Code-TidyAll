@@ -1,6 +1,6 @@
 package Code::TidyAll::Plugin;
 {
-  $Code::TidyAll::Plugin::VERSION = '0.17';
+  $Code::TidyAll::Plugin::VERSION = '0.18';
 }
 use Code::TidyAll::Util qw(basename read_file write_file);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
@@ -152,7 +152,7 @@ Code::TidyAll::Plugin - Create plugins for tidying or validating code
 
 =head1 VERSION
 
-version 0.17
+version 0.18
 
 =head1 SYNOPSIS
 

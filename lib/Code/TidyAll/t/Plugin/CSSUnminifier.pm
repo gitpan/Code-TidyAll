@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Plugin::CSSUnminifier;
 {
-  $Code::TidyAll::t::Plugin::CSSUnminifier::VERSION = '0.17';
+  $Code::TidyAll::t::Plugin::CSSUnminifier::VERSION = '0.18';
 }
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 

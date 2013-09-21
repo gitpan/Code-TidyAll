@@ -2,7 +2,7 @@
 #
 package Code::TidyAll::Util::Zglob;
 {
-  $Code::TidyAll::Util::Zglob::VERSION = '0.17';
+  $Code::TidyAll::Util::Zglob::VERSION = '0.18';
 }
 use strict;
 use Exporter;

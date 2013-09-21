@@ -1,6 +1,6 @@
 package Code::TidyAll::Config::INI::Reader;
 {
-  $Code::TidyAll::Config::INI::Reader::VERSION = '0.17';
+  $Code::TidyAll::Config::INI::Reader::VERSION = '0.18';
 }
 use strict;
 use warnings;

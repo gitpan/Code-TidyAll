@@ -1,6 +1,6 @@
 package Code::TidyAll::t::Util;
 {
-  $Code::TidyAll::t::Util::VERSION = '0.17';
+  $Code::TidyAll::t::Util::VERSION = '0.18';
 }
 use Code::TidyAll::Util qw(dirname tempdir_simple);
 use IPC::System::Simple qw(capturex);
