@@ -1,7 +1,5 @@
 package Code::TidyAll::t::Conf;
-{
-  $Code::TidyAll::t::Conf::VERSION = '0.18';
-}
+$Code::TidyAll::t::Conf::VERSION = '0.19';
 use Code::TidyAll;
 use Code::TidyAll::Util qw(dirname tempdir_simple write_file);
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';

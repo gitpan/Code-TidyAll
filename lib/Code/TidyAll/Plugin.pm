@@ -1,7 +1,5 @@
 package Code::TidyAll::Plugin;
-{
-  $Code::TidyAll::Plugin::VERSION = '0.18';
-}
+$Code::TidyAll::Plugin::VERSION = '0.19';
 use Code::TidyAll::Util qw(basename read_file write_file);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
 use Scalar::Util qw(weaken);
@@ -152,7 +150,7 @@ Code::TidyAll::Plugin - Create plugins for tidying or validating code
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 
@@ -161,7 +159,7 @@ version 0.18
     extends 'Code::TidyAll::Plugin';
     
     sub transform_source {
-        my ( $self, source ) = @_;
+        my ( $self, $source ) = @_;
         ...
         return $source;
     }

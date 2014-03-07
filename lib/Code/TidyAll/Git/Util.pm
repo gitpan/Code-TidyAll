@@ -1,7 +1,5 @@
 package Code::TidyAll::Git::Util;
-{
-  $Code::TidyAll::Git::Util::VERSION = '0.18';
-}
+$Code::TidyAll::Git::Util::VERSION = '0.19';
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(pushd uniq);
 use IPC::System::Simple qw(capturex);

@@ -3,7 +3,7 @@ NAME
     validator
 
 VERSION
-    version 0.18
+    version 0.19
 
 SYNOPSIS
         use Code::TidyAll;

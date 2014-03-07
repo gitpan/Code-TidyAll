@@ -11,11 +11,13 @@ ci = levels of continuation indentation; bk = 1 if in BLOCK, 0 if not.
 in:out indent c b  nesting   code + messages; (messages begin with >>>)
 lines  levels i k            (code begins with one '.' per indent level)
 ------  ----- - - --------   -------------------------------------------
-L3:3     i0:0 0 1            >>>Last line
-
+L1:1     i0:0 0 1            package Test::Code::TidyAll;
+L15:15   i0:0 0 1            sub tidyall_ok {
+L34:34   i0:0 0 1            >>>Starting __END__ section
+L34:34   i0:0 0 1            >>>Entering POD section
 No indentation disagreement seen
 
 No lines exceeded 100 characters
-  Maximum output line length was 34 at line 3
-Suggest including 'use warnings;'
-Suggest including 'use strict;'
+  Maximum output line length was 97 at line 18
+hit eof while in pod documentation (no =cut seen)
+	this can cause trouble with some pod utilities

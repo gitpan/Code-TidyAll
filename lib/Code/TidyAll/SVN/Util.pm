@@ -1,7 +1,5 @@
 package Code::TidyAll::SVN::Util;
-{
-  $Code::TidyAll::SVN::Util::VERSION = '0.18';
-}
+$Code::TidyAll::SVN::Util::VERSION = '0.19';
 use Cwd qw(realpath);
 use IPC::System::Simple qw(capturex);
 use strict;

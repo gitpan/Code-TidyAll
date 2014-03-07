@@ -1,7 +1,5 @@
 package Code::TidyAll::Plugin::JSLint;
-{
-  $Code::TidyAll::Plugin::JSLint::VERSION = '0.18';
-}
+$Code::TidyAll::Plugin::JSLint::VERSION = '0.19';
 use Capture::Tiny qw(capture_merged);
 use Moo;
 extends 'Code::TidyAll::Plugin';
@@ -28,7 +26,7 @@ Code::TidyAll::Plugin::JSLint - use jslint with tidyall
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 

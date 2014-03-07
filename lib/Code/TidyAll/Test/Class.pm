@@ -1,7 +1,5 @@
 package Code::TidyAll::Test::Class;
-{
-  $Code::TidyAll::Test::Class::VERSION = '0.18';
-}
+$Code::TidyAll::Test::Class::VERSION = '0.19';
 use Test::Class::Most;
 use strict;
 use warnings;

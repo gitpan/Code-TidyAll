@@ -1,7 +1,5 @@
 package Code::TidyAll::Plugin::SortLines;
-{
-  $Code::TidyAll::Plugin::SortLines::VERSION = '0.18';
-}
+$Code::TidyAll::Plugin::SortLines::VERSION = '0.19';
 use Moo;
 extends 'Code::TidyAll::Plugin';
 
@@ -23,7 +21,7 @@ Code::TidyAll::Plugin::SortLines - sort lines of a file
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,5 @@
 package Code::TidyAll::t::Zglob;
-{
-  $Code::TidyAll::t::Zglob::VERSION = '0.18';
-}
+$Code::TidyAll::t::Zglob::VERSION = '0.19';
 use File::Zglob;
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';
 use Code::TidyAll::Util::Zglob qw(zglob_to_regex);

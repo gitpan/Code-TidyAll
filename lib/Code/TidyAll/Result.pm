@@ -1,7 +1,5 @@
 package Code::TidyAll::Result;
-{
-  $Code::TidyAll::Result::VERSION = '0.18';
-}
+$Code::TidyAll::Result::VERSION = '0.19';
 use Moo;
 
 has 'error'        => ( is => 'ro' );
@@ -23,7 +21,7 @@ Code::TidyAll::Result - Result returned from processing a file/source
 
 =head1 VERSION
 
-version 0.18
+version 0.19
 
 =head1 SYNOPSIS
 

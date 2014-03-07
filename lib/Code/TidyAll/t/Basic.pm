@@ -1,7 +1,5 @@
 package Code::TidyAll::t::Basic;
-{
-  $Code::TidyAll::t::Basic::VERSION = '0.18';
-}
+$Code::TidyAll::t::Basic::VERSION = '0.19';
 use Cwd qw(realpath);
 use Code::TidyAll::Util qw(dirname mkpath pushd read_file tempdir_simple write_file);
 use Code::TidyAll;
