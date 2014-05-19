@@ -1,5 +1,5 @@
 package Code::TidyAll::t::Util;
-$Code::TidyAll::t::Util::VERSION = '0.19';
+$Code::TidyAll::t::Util::VERSION = '0.20';
 use Code::TidyAll::Util qw(dirname tempdir_simple);
 use IPC::System::Simple qw(capturex);
 use Test::Class::Most parent => 'Code::TidyAll::Test::Class';

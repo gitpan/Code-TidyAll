@@ -1,5 +1,5 @@
 package Code::TidyAll::Test::Plugin::UpperText;
-$Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.19';
+$Code::TidyAll::Test::Plugin::UpperText::VERSION = '0.20';
 use Moo;
 extends 'Code::TidyAll::Plugin';
 

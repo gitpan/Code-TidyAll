@@ -1,5 +1,5 @@
 package Code::TidyAll::t::Plugin::PHPCodeSniffer;
-$Code::TidyAll::t::Plugin::PHPCodeSniffer::VERSION = '0.19';
+$Code::TidyAll::t::Plugin::PHPCodeSniffer::VERSION = '0.20';
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 
 sub test_filename { 'foo.php' }

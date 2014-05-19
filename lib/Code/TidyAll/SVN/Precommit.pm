@@ -1,5 +1,5 @@
 package Code::TidyAll::SVN::Precommit;
-$Code::TidyAll::SVN::Precommit::VERSION = '0.19';
+$Code::TidyAll::SVN::Precommit::VERSION = '0.20';
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
 use Code::TidyAll::Util qw(basename dirname mkpath realpath tempdir_simple write_file);
@@ -171,7 +171,7 @@ to be tidyall'd
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::CSSUnminifier;
-$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.19';
+$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.20';
 use IPC::System::Simple qw(run);
 use Moo;
 extends 'Code::TidyAll::Plugin';
@@ -24,7 +24,7 @@ Code::TidyAll::Plugin::CSUnminifier - use cssunminifier with tidyall
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 

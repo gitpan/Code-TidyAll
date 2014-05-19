@@ -1,5 +1,5 @@
 package Code::TidyAll::t::SVN;
-$Code::TidyAll::t::SVN::VERSION = '0.19';
+$Code::TidyAll::t::SVN::VERSION = '0.20';
 use Capture::Tiny qw(capture_stdout capture_stderr capture);
 use Code::TidyAll::SVN::Precommit;
 use Code::TidyAll::SVN::Util qw(svn_uncommitted_files);

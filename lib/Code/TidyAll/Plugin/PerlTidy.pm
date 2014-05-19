@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PerlTidy;
-$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.19';
+$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.20';
 use Capture::Tiny qw(capture_merged);
 use Perl::Tidy;
 use Moo;
@@ -39,7 +39,7 @@ Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
 
 =head1 VERSION
 
-version 0.19
+version 0.20
 
 =head1 SYNOPSIS
 

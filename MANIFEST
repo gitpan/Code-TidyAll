@@ -61,7 +61,6 @@ lib/Code/TidyAll/t/Util.pm
 lib/Code/TidyAll/t/Zglob.pm
 lib/Pod/Weaver/Section/SeeAlsoCodeTidyAll.pm
 lib/Test/Code/TidyAll.pm
-perltidy.LOG
 t/Basic.t
 t/Conf.t
 t/Zglob.t

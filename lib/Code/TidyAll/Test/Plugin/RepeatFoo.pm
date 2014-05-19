@@ -1,5 +1,5 @@
 package Code::TidyAll::Test::Plugin::RepeatFoo;
-$Code::TidyAll::Test::Plugin::RepeatFoo::VERSION = '0.19';
+$Code::TidyAll::Test::Plugin::RepeatFoo::VERSION = '0.20';
 use Code::TidyAll::Util qw(read_file write_file);
 use Moo;
 extends 'Code::TidyAll::Plugin';

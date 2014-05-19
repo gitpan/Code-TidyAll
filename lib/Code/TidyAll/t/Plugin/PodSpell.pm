@@ -1,5 +1,5 @@
 package Code::TidyAll::t::Plugin::PodSpell;
-$Code::TidyAll::t::Plugin::PodSpell::VERSION = '0.19';
+$Code::TidyAll::t::Plugin::PodSpell::VERSION = '0.20';
 use Code::TidyAll::Util qw(write_file);
 use Test::Class::Most parent => 'Code::TidyAll::t::Plugin';
 
