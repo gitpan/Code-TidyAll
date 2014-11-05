@@ -1,5 +1,7 @@
 package Code::TidyAll;
-$Code::TidyAll::VERSION = '0.20';
+# git description: ff1d53b
+
+$Code::TidyAll::VERSION = '0.21';
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
 use Code::TidyAll::Cache;
@@ -480,17 +482,15 @@ sub _error_result {
 
 1;
 
+# ABSTRACT: Engine for tidyall, your all-in-one code tidier and validator
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll - Engine for tidyall, your all-in-one code tidier and validator
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -520,7 +520,7 @@ version 0.20
 
 =head1 DESCRIPTION
 
-This is the engine used by L<tidyall|tidyall> - read that first to get an
+This is the engine used by L<tidyall> - read that first to get an
 overview.
 
 You can call this API from your own program instead of executing C<tidyall>.
@@ -537,7 +537,7 @@ The regular constructor. Must pass at least I<plugins> and I<root_dir>.
 
 =item new_with_conf_file ($conf_file, %params)
 
-Takes a conf file path, followed optionally by a set of key/value parameters. 
+Takes a conf file path, followed optionally by a set of key/value parameters.
 Reads parameters out of the conf file and combines them with the passed
 parameters (the latter take precedence), and calls the regular constructor.
 
@@ -592,7 +592,7 @@ C<backup_ttl> here).
 
 Call L</process_file> on each file; descend recursively into each directory if
 the C<recursive> flag is on. Return a list of
-L<Code::TidyAll::Result|Code::TidyAll::Result> objects, one for each file.
+L<Code::TidyAll::Result> objects, one for each file.
 
 =item process_file (file)
 
@@ -618,7 +618,7 @@ Write the cache if enabled
 
 =item *
 
-Return a L<Code::TidyAll::Result|Code::TidyAll::Result> object
+Return a L<Code::TidyAll::Result> object
 
 =back
 
@@ -627,12 +627,12 @@ Return a L<Code::TidyAll::Result|Code::TidyAll::Result> object
 Like L</process_file>, but process the I<source> string instead of a file, and
 do not read from or write to the cache. You must still pass the relative
 I<path> from the root as the second argument, so that we know which plugins to
-apply. Return a L<Code::TidyAll::Result|Code::TidyAll::Result> object.
+apply. Return a L<Code::TidyAll::Result> object.
 
 =item plugins_for_path (I<path>)
 
 Given a relative I<path> from the root, return a list of
-L<Code::TidyAll::Plugin|Code::TidyAll::Plugin> objects that apply to it, or an
+L<Code::TidyAll::Plugin> objects that apply to it, or an
 empty list if no plugins apply.
 
 =item find_conf_file (I<conf_names>, I<start_dir>)
@@ -647,17 +647,51 @@ Returns a list of sorted files that match at least one plugin in configuration.
 
 =back
 
-=head1 SEE ALSO
+=head1 AUTHORS
 
-L<Code::TidyAll|Code::TidyAll>
+=over 4
 
-=head1 AUTHOR
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
+=head1 CONTRIBUTORS
+
+=for stopwords George Hartzell Gregory Oschwald Joe Crotty Olaf Alders Pedro Melo
+
+=over 4
+
+=item *
+
+George Hartzell <georgewh@gene.com>
+
+=item *
+
+Gregory Oschwald <goschwald@maxmind.com>
+
+=item *
+
+Joe Crotty <joe.crotty@returnpath.net>
+
+=item *
+
+Olaf Alders <olaf@wundersolutions.com>
+
+=item *
+
+Pedro Melo <melo@simplicidade.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

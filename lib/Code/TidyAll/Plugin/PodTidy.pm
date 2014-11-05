@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodTidy;
-$Code::TidyAll::Plugin::PodTidy::VERSION = '0.20';
+$Code::TidyAll::Plugin::PodTidy::VERSION = '0.21';
 use Capture::Tiny qw(capture_merged);
 use Pod::Tidy;
 use Moo;
@@ -24,17 +24,15 @@ sub transform_file {
 
 1;
 
+# ABSTRACT: Use podtidy with tidyall
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin::PodTidy - use podtidy with tidyall
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -46,7 +44,7 @@ version 0.20
 
 =head1 DESCRIPTION
 
-Runs L<podtidy|podtidy>, which will tidy the POD in your Perl or POD-only file.
+Runs L<podtidy>, which will tidy the POD in your Perl or POD-only file.
 
 =head1 INSTALLATION
 
@@ -66,15 +64,25 @@ Number of columns per line
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

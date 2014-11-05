@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PerlTidy;
-$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.20';
+$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.21';
 use Capture::Tiny qw(capture_merged);
 use Perl::Tidy;
 use Moo;
@@ -10,17 +10,21 @@ sub transform_source {
 
     # perltidy reports errors in two different ways.
     # Argument/profile errors are output and an error_flag is returned.
-    # Syntax errors are sent to errorfile.
-    #
-    my ( $output, $error_flag, $errorfile, $destination );
+    # Syntax errors are sent to errorfile or stderr, depending on the
+    # the setting of -se/-nse (aka --standard-error-output).  These flags
+    # might be hidden in other bundles, e.g. -pbp.  Be defensive and
+    # check both.
+    my ( $output, $error_flag, $errorfile, $stderr, $destination );
     $output = capture_merged {
         $error_flag = Perl::Tidy::perltidy(
             argv        => $self->argv,
             source      => \$source,
             destination => \$destination,
+            stderr      => \$stderr,
             errorfile   => \$errorfile
         );
     };
+    die $stderr          if $stderr;
     die $errorfile       if $errorfile;
     die $output          if $error_flag;
     print STDERR $output if defined($output);
@@ -36,10 +40,6 @@ __END__
 =head1 NAME
 
 Code::TidyAll::Plugin::PerlTidy - use perltidy with tidyall
-
-=head1 VERSION
-
-version 0.20
 
 =head1 SYNOPSIS
 
@@ -59,7 +59,7 @@ version 0.20
 
 =head1 DESCRIPTION
 
-Runs L<perltidy|perltidy>, a Perl tidier.
+Runs L<perltidy>, a Perl tidier.
 
 =head1 INSTALLATION
 
@@ -77,19 +77,3 @@ Arguments to pass to perltidy
 
 =back
 
-=head1 SEE ALSO
-
-L<Code::TidyAll|Code::TidyAll>
-
-=head1 AUTHOR
-
-Jonathan Swartz <swartz@pobox.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2011 by Jonathan Swartz.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
-
-=cut

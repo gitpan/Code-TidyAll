@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::SortLines;
-Code::TidyAll::t::Plugin::SortLines->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::SortLines;
+Test::Code::TidyAll::Plugin::SortLines->runtests;

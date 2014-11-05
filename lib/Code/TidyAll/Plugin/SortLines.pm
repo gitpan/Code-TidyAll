@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::SortLines;
-$Code::TidyAll::Plugin::SortLines::VERSION = '0.20';
+$Code::TidyAll::Plugin::SortLines::VERSION = '0.21';
 use Moo;
 extends 'Code::TidyAll::Plugin';
 
@@ -11,17 +11,15 @@ sub transform_source {
 
 1;
 
+# ABSTRACT: Sort the lines in a file
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin::SortLines - sort lines of a file
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -38,15 +36,25 @@ C<.ispell*>.
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Git;
-Code::TidyAll::t::Git->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Git;
+Test::Code::TidyAll::Git->runtests;

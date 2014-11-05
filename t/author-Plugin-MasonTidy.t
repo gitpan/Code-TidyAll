@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::MasonTidy;
-Code::TidyAll::t::Plugin::MasonTidy->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::MasonTidy;
+Test::Code::TidyAll::Plugin::MasonTidy->runtests;

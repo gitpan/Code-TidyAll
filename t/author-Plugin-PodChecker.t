@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::PodChecker;
-Code::TidyAll::t::Plugin::PodChecker->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::PodChecker;
+Test::Code::TidyAll::Plugin::PodChecker->runtests;

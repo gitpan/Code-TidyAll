@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::CSSUnminifier;
-Code::TidyAll::t::Plugin::CSSUnminifier->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::CSSUnminifier;
+Test::Code::TidyAll::Plugin::CSSUnminifier->runtests;

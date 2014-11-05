@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::JSHint;
-Code::TidyAll::t::Plugin::JSHint->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::JSHint;
+Test::Code::TidyAll::Plugin::JSHint->runtests;

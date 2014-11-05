@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::MasonTidy;
-$Code::TidyAll::Plugin::MasonTidy::VERSION = '0.20';
+$Code::TidyAll::Plugin::MasonTidy::VERSION = '0.21';
 use Mason::Tidy;
 use Mason::Tidy::App;
 use Moo;
@@ -19,17 +19,15 @@ sub transform_source {
 
 1;
 
+# ABSTRACT: Use masontidy with tidyall
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin::MasonTidy - use masontidy with tidyall
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -41,12 +39,12 @@ version 0.20
 
 =head1 DESCRIPTION
 
-Runs L<masontidy|masontidy>, a tidier for L<HTML::Mason|HTML::Mason> and
-L<Mason 2|Mason> components.
+Runs L<masontidy>, a tidier for L<HTML::Mason> and L<Mason 2|Mason>
+components.
 
 =head1 INSTALLATION
 
-Install L<masontidy|masontidy> from CPAN.
+Install L<masontidy> from CPAN.
 
     cpanm masontidy
 
@@ -66,15 +64,25 @@ Full path to masontidy
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

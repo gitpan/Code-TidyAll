@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::CSSUnminifier;
-$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.20';
+$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.21';
 use IPC::System::Simple qw(run);
 use Moo;
 extends 'Code::TidyAll::Plugin';
@@ -14,17 +14,11 @@ sub transform_file {
 
 1;
 
+# ABSTACT: Use cssunminifier with tidyall
+
 __END__
 
 =pod
-
-=head1 NAME
-
-Code::TidyAll::Plugin::CSUnminifier - use cssunminifier with tidyall
-
-=head1 VERSION
-
-version 0.20
 
 =head1 SYNOPSIS
 
@@ -58,20 +52,3 @@ Arguments to pass to C<cssunminifier>
 Full path to C<cssunminifier>
 
 =back
-
-=head1 SEE ALSO
-
-L<Code::TidyAll|Code::TidyAll>
-
-=head1 AUTHOR
-
-Jonathan Swartz <swartz@pobox.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is copyright (c) 2011 by Jonathan Swartz.
-
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
-
-=cut

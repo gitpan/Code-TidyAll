@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin;
-$Code::TidyAll::Plugin::VERSION = '0.20';
+$Code::TidyAll::Plugin::VERSION = '0.21';
 use Code::TidyAll::Util qw(basename read_file write_file);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
 use Scalar::Util qw(weaken);
@@ -140,24 +140,22 @@ sub matches_path {
 
 1;
 
+# ABSTRACT: Create plugins for tidying or validating code
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin - Create plugins for tidying or validating code
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
     package Code::TidyAll::Plugin::SomeTidier;
     use Moo;
     extends 'Code::TidyAll::Plugin';
-    
+
     sub transform_source {
         my ( $self, $source ) = @_;
         ...
@@ -168,7 +166,7 @@ version 0.20
     package Code::TidyAll::Plugin::SomeValidator;
     use Moo;
     extends 'Code::TidyAll::Plugin';
-    
+
     sub validate_file {
         my ( $self, $file ) = @_;
         die "not valid" if ...;
@@ -181,8 +179,8 @@ plugin class that inherits from this class. This document describes how to
 implement a new plugin.
 
 The easiest way to start is to look at existing plugins, such as
-L<Code::TidyAll::Plugin::PerlTidy|Code::TidyAll::Plugin::PerlTidy> and
-L<Code::TidyAll::Plugin::PerlCritic|Code::TidyAll::Plugin::PerlCritic>.
+L<Code::TidyAll::Plugin::PerlTidy> and
+L<Code::TidyAll::Plugin::PerlCritic>.
 
 =head1 NAMING
 
@@ -206,10 +204,10 @@ as parameters. e.g. given
     ignore = lib/UtterHack.pm
     argv = -severity 3
 
-then L<Code::TidyAll::Plugin::PerlCritic|Code::TidyAll::Plugin::PerlCritic>
+then L<Code::TidyAll::Plugin::PerlCritic>
 would be constructed with parameters
 
-    select => 'lib/**/*.pm', 
+    select => 'lib/**/*.pm',
     ignore = 'lib/UtterHack.pm',
     argv = '-severity 3'
 
@@ -233,7 +231,7 @@ Name of the plugin to be used in error messages etc.
 
 =item tidyall
 
-A weak reference back to the L<Code::TidyAll|Code::TidyAll> object.
+A weak reference back to the L<Code::TidyAll> object.
 
 =item select, ignore
 
@@ -286,15 +284,25 @@ error. This runs on all plugins I<after> any of the other methods.
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

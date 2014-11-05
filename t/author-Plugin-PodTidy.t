@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::PodTidy;
-Code::TidyAll::t::Plugin::PodTidy->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::PodTidy;
+Test::Code::TidyAll::Plugin::PodTidy->runtests;

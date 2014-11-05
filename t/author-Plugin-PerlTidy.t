@@ -7,5 +7,6 @@ BEGIN {
   }
 }
 
-use Code::TidyAll::t::Plugin::PerlTidy;
-Code::TidyAll::t::Plugin::PerlTidy->runtests;
+use lib 't/lib';
+use Test::Code::TidyAll::Plugin::PerlTidy;
+Test::Code::TidyAll::Plugin::PerlTidy->runtests;

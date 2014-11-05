@@ -1,5 +1,5 @@
 package Code::TidyAll::Git::Prereceive;
-$Code::TidyAll::Git::Prereceive::VERSION = '0.20';
+$Code::TidyAll::Git::Prereceive::VERSION = '0.21';
 use Code::TidyAll;
 use Code::TidyAll::Util qw(dirname realpath tempdir_simple read_file write_file);
 use Capture::Tiny qw(capture);
@@ -141,18 +141,15 @@ sub check_repeated_push {
 
 1;
 
+# ABSTRACT: Git pre-receive hook that requires files to betidyall'd
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Git::Prereceive - Git pre-receive hook that requires files to be
-tidyall'd
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -162,7 +159,7 @@ version 0.20
     use Code::TidyAll::Git::Prereceive;
     use strict;
     use warnings;
-    
+
     Code::TidyAll::Git::Prereceive->check();
 
 
@@ -181,13 +178,13 @@ version 0.20
 
 This module implements a L<Git pre-receive
 hook|http://git-scm.com/book/en/Customizing-Git-Git-Hooks> that checks if all
-pushed files are tidied and valid according to L<tidyall|tidyall>, and rejects
+pushed files are tidied and valid according to L<tidyall>, and rejects
 the push if not.
 
 This is typically used to validate pushes from multiple developers to a shared
 repo, possibly on a remote server.
 
-See also L<Code::TidyAll::Git::Precommit|Code::TidyAll::Git::Precommit>, which
+See also L<Code::TidyAll::Git::Precommit>, which
 operates locally.
 
 =head1 METHODS
@@ -198,16 +195,16 @@ operates locally.
 
 An all-in-one class method. Reads commit info from standard input, then checks
 that all files being added or modified in this push are tidied and valid
-according to L<tidyall|tidyall>. If not, then the entire push is rejected and
+according to L<tidyall>. If not, then the entire push is rejected and
 the reason(s) are output to the client. e.g.
 
     % git push
     Counting objects: 9, done.
     ...
-    remote: [checked] lib/CHI/Util.pm        
-    remote: Code before strictures are enabled on line 13 [TestingAndDebugging::RequireUseStrict]        
-    remote: 
-    remote: 1 file did not pass tidyall check        
+    remote: [checked] lib/CHI/Util.pm
+    remote: Code before strictures are enabled on line 13 [TestingAndDebugging::RequireUseStrict]
+    remote:
+    remote: 1 file did not pass tidyall check
     To ...
      ! [remote rejected] master -> master (pre-receive hook declined)
 
@@ -219,12 +216,12 @@ commits 3 consecutive times (configurable via L</allow_repeated_push>):
 
     % git push
     ...
-    remote: 1 file did not pass tidyall check        
+    remote: 1 file did not pass tidyall check
 
     % git push
     ...
     *** Identical push seen 2 times
-    remote: 1 file did not pass tidyall check        
+    remote: 1 file did not pass tidyall check
 
     % git push
     ...
@@ -276,11 +273,11 @@ occurs. By default, the error will be reported but the commit will be allowed.
 
 =item tidyall_class
 
-Subclass to use instead of L<Code::TidyAll|Code::TidyAll>
+Subclass to use instead of L<Code::TidyAll>
 
 =item tidyall_options
 
-Hashref of options to pass to the L<Code::TidyAll|Code::TidyAll> constructor.
+Hashref of options to pass to the L<Code::TidyAll> constructor.
 You can use this to override the default options
 
     mode  => 'commit',
@@ -310,15 +307,25 @@ newlines), as an imperfect way of filtering out symlinks.
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

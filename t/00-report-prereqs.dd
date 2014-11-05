@@ -1,0 +1,85 @@
+do { my $x = {
+       'configure' => {
+                        'requires' => {
+                                        'ExtUtils::MakeMaker' => '0'
+                                      }
+                      },
+       'develop' => {
+                      'requires' => {
+                                      'Code::TidyAll::Plugin::Perl::AlignMooseAttributes' => '0',
+                                      'Code::TidyAll::Plugin::Perl::IgnoreMethodSignaturesSimple' => '0',
+                                      'File::Which' => '0',
+                                      'File::pushd' => '0',
+                                      'JSON' => '0',
+                                      'Mason::Tidy' => '0',
+                                      'Mason::Tidy::App' => '0',
+                                      'Perl::Tidy' => '0',
+                                      'Pod::Checker' => '0',
+                                      'Pod::Spell' => '0',
+                                      'Pod::Tidy' => '0',
+                                      'SVN::Look' => '0',
+                                      'Test::CPAN::Changes' => '0.19',
+                                      'Test::Differences' => '0',
+                                      'Test::EOL' => '0',
+                                      'Test::More' => '0',
+                                      'Test::NoTabs' => '0',
+                                      'Test::Pod' => '1.41',
+                                      'Test::Spelling' => '0.12'
+                                    }
+                    },
+       'runtime' => {
+                      'requires' => {
+                                      'Capture::Tiny' => '0',
+                                      'Config::INI::Reader' => '0',
+                                      'Cwd' => '0',
+                                      'Data::Dumper' => '0',
+                                      'Date::Format' => '0',
+                                      'Digest::SHA1' => '0',
+                                      'Exporter' => '0',
+                                      'File::Basename' => '0',
+                                      'File::Find' => '0',
+                                      'File::Path' => '0',
+                                      'File::Spec::Functions' => '0',
+                                      'File::Temp' => '0',
+                                      'File::Zglob' => '0',
+                                      'Getopt::Long' => '0',
+                                      'Guard' => '0',
+                                      'IPC::Run3' => '0',
+                                      'IPC::System::Simple' => '0',
+                                      'List::MoreUtils' => '0',
+                                      'Log::Any' => '0',
+                                      'Moo' => '0',
+                                      'Scalar::Util' => '0',
+                                      'Test::Builder' => '0',
+                                      'Text::ParseWords' => '0',
+                                      'Time::Duration::Parse' => '0',
+                                      'Try::Tiny' => '0',
+                                      'base' => '0',
+                                      'constant' => '0',
+                                      'strict' => '0',
+                                      'vars' => '0',
+                                      'warnings' => '0'
+                                    }
+                    },
+       'test' => {
+                   'recommends' => {
+                                     'CPAN::Meta' => '2.120900'
+                                   },
+                   'requires' => {
+                                   'ExtUtils::MakeMaker' => '0',
+                                   'File::Spec' => '0',
+                                   'File::Which' => '0',
+                                   'File::pushd' => '0',
+                                   'IO::Handle' => '0',
+                                   'IPC::Open3' => '0',
+                                   'Test::Class::Most' => '0',
+                                   'Test::Differences' => '0',
+                                   'Test::More' => '0.88',
+                                   'autodie' => '0',
+                                   'lib' => '0',
+                                   'perl' => '5.006'
+                                 }
+                 }
+     };
+  $x;
+ }

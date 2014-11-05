@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodChecker;
-$Code::TidyAll::Plugin::PodChecker::VERSION = '0.20';
+$Code::TidyAll::Plugin::PodChecker::VERSION = '0.21';
 use Capture::Tiny qw(capture_merged);
 use Pod::Checker;
 use Moo;
@@ -12,7 +12,7 @@ sub validate_file {
 
     my $result;
     my %options = ( defined( $self->warnings ) ? ( '-warnings' => $self->warnings ) : () );
-    my $checker = new Pod::Checker(%options);
+    my $checker = Pod::Checker->new(%options);
     my $output  = capture_merged { $checker->parse_from_file( $file, \*STDERR ) };
     die $output
       if $checker->num_errors
@@ -21,17 +21,15 @@ sub validate_file {
 
 1;
 
+# ABSTRACT: Use podchecker with tidyall
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin::PodChecker - use podchecker with tidyall
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -50,7 +48,7 @@ version 0.20
 
 =head1 DESCRIPTION
 
-Runs L<podchecker|podchecker>, a POD validator, and dies if any problems were
+Runs L<podchecker>, a POD validator, and dies if any problems were
 found.
 
 =head1 INSTALLATION
@@ -72,15 +70,25 @@ ignored.
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

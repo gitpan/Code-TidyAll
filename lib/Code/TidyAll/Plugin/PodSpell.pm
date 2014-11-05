@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodSpell;
-$Code::TidyAll::Plugin::PodSpell::VERSION = '0.20';
+$Code::TidyAll::Plugin::PodSpell::VERSION = '0.21';
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
 use IPC::System::Simple qw();
@@ -44,17 +44,15 @@ sub validate_file {
 
 1;
 
+# ABSTRACT: Use Pod::Spell + ispell with tidyall
+
 __END__
 
 =pod
 
-=head1 NAME
-
-Code::TidyAll::Plugin::PodSpell - use Pod::Spell + ispell with tidyall
-
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -115,15 +113,25 @@ If true, show suggestions next to misspelled words. Default is false.
 
 =head1 SEE ALSO
 
-L<Code::TidyAll|Code::TidyAll>
+L<Code::TidyAll>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+=over 4
+
+=item *
 
 Jonathan Swartz <swartz@pobox.com>
 
+=item *
+
+Dave Rolsky <autarch@urth.org>
+
+=back
+
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jonathan Swartz.
+This software is copyright (c) 2011 - 2014 by Jonathan Swartz.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
