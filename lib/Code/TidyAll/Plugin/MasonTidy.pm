@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::MasonTidy;
-$Code::TidyAll::Plugin::MasonTidy::VERSION = '0.21';
+$Code::TidyAll::Plugin::MasonTidy::VERSION = '0.22';
 use Mason::Tidy;
 use Mason::Tidy::App;
 use Moo;
@@ -27,7 +27,7 @@ __END__
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

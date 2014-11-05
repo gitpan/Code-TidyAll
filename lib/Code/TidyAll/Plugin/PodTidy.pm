@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodTidy;
-$Code::TidyAll::Plugin::PodTidy::VERSION = '0.21';
+$Code::TidyAll::Plugin::PodTidy::VERSION = '0.22';
 use Capture::Tiny qw(capture_merged);
 use Pod::Tidy;
 use Moo;
@@ -32,7 +32,7 @@ __END__
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

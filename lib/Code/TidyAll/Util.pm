@@ -1,5 +1,5 @@
 package Code::TidyAll::Util;
-$Code::TidyAll::Util::VERSION = '0.21';
+$Code::TidyAll::Util::VERSION = '0.22';
 use Cwd qw(realpath);
 use Data::Dumper;
 use File::Basename;

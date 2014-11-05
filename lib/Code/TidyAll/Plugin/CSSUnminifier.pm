@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::CSSUnminifier;
-$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.21';
+$Code::TidyAll::Plugin::CSSUnminifier::VERSION = '0.22';
 use IPC::System::Simple qw(run);
 use Moo;
 extends 'Code::TidyAll::Plugin';

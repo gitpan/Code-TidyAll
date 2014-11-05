@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodSpell;
-$Code::TidyAll::Plugin::PodSpell::VERSION = '0.21';
+$Code::TidyAll::Plugin::PodSpell::VERSION = '0.22';
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
 use IPC::System::Simple qw();
@@ -52,7 +52,7 @@ __END__
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

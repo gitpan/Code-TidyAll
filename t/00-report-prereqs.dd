@@ -70,14 +70,11 @@ do { my $x = {
                                    'File::Spec' => '0',
                                    'File::Which' => '0',
                                    'File::pushd' => '0',
-                                   'IO::Handle' => '0',
-                                   'IPC::Open3' => '0',
                                    'Test::Class::Most' => '0',
                                    'Test::Differences' => '0',
                                    'Test::More' => '0.88',
                                    'autodie' => '0',
-                                   'lib' => '0',
-                                   'perl' => '5.006'
+                                   'lib' => '0'
                                  }
                  }
      };

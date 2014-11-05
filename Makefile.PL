@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use 5.006;
+
 
 use ExtUtils::MakeMaker;
 
@@ -20,7 +20,6 @@ my %WriteMakefileArgs = (
     "bin/tidyall"
   ],
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.006",
   "NAME" => "Code::TidyAll",
   "PREREQ_PM" => {
     "Capture::Tiny" => 0,
@@ -59,15 +58,13 @@ my %WriteMakefileArgs = (
     "File::Spec" => 0,
     "File::Which" => 0,
     "File::pushd" => 0,
-    "IO::Handle" => 0,
-    "IPC::Open3" => 0,
     "Test::Class::Most" => 0,
     "Test::Differences" => 0,
     "Test::More" => "0.88",
     "autodie" => 0,
     "lib" => 0
   },
-  "VERSION" => "0.21",
+  "VERSION" => "0.22",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -94,8 +91,6 @@ my %FallbackPrereqs = (
   "File::pushd" => 0,
   "Getopt::Long" => 0,
   "Guard" => 0,
-  "IO::Handle" => 0,
-  "IPC::Open3" => 0,
   "IPC::Run3" => 0,
   "IPC::System::Simple" => 0,
   "List::MoreUtils" => 0,

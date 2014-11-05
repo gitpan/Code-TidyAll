@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PerlTidy;
-$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.21';
+$Code::TidyAll::Plugin::PerlTidy::VERSION = '0.22';
 use Capture::Tiny qw(capture_merged);
 use Perl::Tidy;
 use Moo;

@@ -1,5 +1,5 @@
 package Code::TidyAll::Git::Precommit;
-$Code::TidyAll::Git::Precommit::VERSION = '0.21';
+$Code::TidyAll::Git::Precommit::VERSION = '0.22';
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
 use Code::TidyAll::Util qw(dirname mkpath realpath tempdir_simple write_file);
@@ -77,7 +77,7 @@ __END__
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

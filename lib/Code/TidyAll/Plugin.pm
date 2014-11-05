@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin;
-$Code::TidyAll::Plugin::VERSION = '0.21';
+$Code::TidyAll::Plugin::VERSION = '0.22';
 use Code::TidyAll::Util qw(basename read_file write_file);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
 use Scalar::Util qw(weaken);
@@ -148,7 +148,7 @@ __END__
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 

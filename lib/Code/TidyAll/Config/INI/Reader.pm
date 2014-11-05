@@ -1,5 +1,5 @@
 package Code::TidyAll::Config::INI::Reader;
-$Code::TidyAll::Config::INI::Reader::VERSION = '0.21';
+$Code::TidyAll::Config::INI::Reader::VERSION = '0.22';
 use strict;
 use warnings;
 use base qw(Config::INI::Reader);
