@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::JSON;
-$Code::TidyAll::Plugin::JSON::VERSION = '0.22';
+$Code::TidyAll::Plugin::JSON::VERSION = '0.23';
 use strict;
 use warnings;
 
@@ -31,7 +31,7 @@ __END__
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

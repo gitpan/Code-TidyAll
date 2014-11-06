@@ -1,7 +1,7 @@
 package Code::TidyAll;
-# git description: v0.21-2-gdb5019f
+# git description: v0.22-2-g9f58dcc
 
-$Code::TidyAll::VERSION = '0.22';
+$Code::TidyAll::VERSION = '0.23';
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
 use Code::TidyAll::Cache;
@@ -490,7 +490,7 @@ __END__
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 

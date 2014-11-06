@@ -1,7 +1,7 @@
 # This is a copy of Text::Glob, modified to support "**/"
 #
 package Code::TidyAll::Util::Zglob;
-$Code::TidyAll::Util::Zglob::VERSION = '0.22';
+$Code::TidyAll::Util::Zglob::VERSION = '0.23';
 use strict;
 use Exporter;
 use vars qw/@ISA @EXPORT_OK

@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::JSBeautify;
-$Code::TidyAll::Plugin::JSBeautify::VERSION = '0.22';
+$Code::TidyAll::Plugin::JSBeautify::VERSION = '0.23';
 use Capture::Tiny qw(capture_merged);
 use Code::TidyAll::Util qw(write_file);
 use Moo;
@@ -31,7 +31,7 @@ __END__
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 
