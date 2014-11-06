@@ -1,9 +1,10 @@
 package Code::TidyAll::Git::Precommit;
-$Code::TidyAll::Git::Precommit::VERSION = '0.23';
+$Code::TidyAll::Git::Precommit::VERSION = '0.24';
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
-use Code::TidyAll::Util qw(dirname mkpath realpath tempdir_simple write_file);
+use Code::TidyAll::Util qw(dirname mkpath realpath tempdir_simple);
 use Cwd qw(cwd);
+use File::Slurp::Tiny qw(write_file);
 use Guard;
 use Log::Any qw($log);
 use IPC::System::Simple qw(capturex run);
@@ -12,10 +13,10 @@ use Try::Tiny;
 
 # Public
 has 'conf_name'       => ( is => 'ro' );
-has 'git_path'        => ( is => 'ro', default => sub { 'git' } );
+has 'git_path'        => ( is => 'ro', default => 'git' );
 has 'no_stash'        => ( is => 'ro' );
 has 'reject_on_error' => ( is => 'ro' );
-has 'tidyall_class'   => ( is => 'ro', default => sub { "Code::TidyAll" } );
+has 'tidyall_class'   => ( is => 'ro', default => 'Code::TidyAll' );
 has 'tidyall_options' => ( is => 'ro', default => sub { {} } );
 
 sub check {
@@ -77,7 +78,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

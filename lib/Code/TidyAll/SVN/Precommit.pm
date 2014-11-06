@@ -1,5 +1,5 @@
 package Code::TidyAll::SVN::Precommit;
-$Code::TidyAll::SVN::Precommit::VERSION = '0.23';
+$Code::TidyAll::SVN::Precommit::VERSION = '0.24';
 use Capture::Tiny qw(capture_stdout capture_stderr);
 use Code::TidyAll;
 use Code::TidyAll::Util qw(basename dirname mkpath realpath tempdir_simple write_file);
@@ -10,11 +10,11 @@ use Try::Tiny;
 
 # Public
 has 'conf_name'                => ( is => 'ro' );
-has 'emergency_comment_prefix' => ( is => 'ro', default => sub { "NO TIDYALL" } );
+has 'emergency_comment_prefix' => ( is => 'ro', default => 'NO TIDYALL' );
 has 'extra_conf_files'         => ( is => 'ro', default => sub { [] } );
 has 'reject_on_error'          => ( is => 'ro' );
 has 'repos'                    => ( is => 'ro', default => sub { $ARGV[0] } );
-has 'tidyall_class'            => ( is => 'ro', default => sub { "Code::TidyAll" } );
+has 'tidyall_class'            => ( is => 'ro', default => 'Code::TidyAll' );
 has 'tidyall_options'          => ( is => 'ro', default => sub { {} } );
 has 'txn'                      => ( is => 'ro', default => sub { $ARGV[1] } );
 
@@ -168,7 +168,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

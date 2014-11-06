@@ -1,7 +1,8 @@
 package Code::TidyAll::Cache;
-$Code::TidyAll::Cache::VERSION = '0.23';
+$Code::TidyAll::Cache::VERSION = '0.24';
 use Digest::SHA1 qw(sha1_hex);
-use Code::TidyAll::Util qw(dirname mkpath read_file write_file);
+use Code::TidyAll::Util qw(dirname mkpath);
+use File::Slurp::Tiny qw(read_file write_file);
 use Moo;
 
 has 'cache_dir' => ( is => 'ro', required => 1 );

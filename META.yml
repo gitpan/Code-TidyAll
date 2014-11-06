@@ -4,13 +4,14 @@ author:
   - 'Jonathan Swartz <swartz@pobox.com>'
   - 'Dave Rolsky <autarch@urth.org>'
 build_requires:
+  Encode: '0'
   ExtUtils::MakeMaker: '0'
   File::Spec: '0'
   File::Which: '0'
-  File::pushd: '0'
   Test::Class::Most: '0'
   Test::Differences: '0'
   Test::More: '0.88'
+  Test::Warnings: '0'
   autodie: '0'
   lib: '0'
 configure_requires:
@@ -28,79 +29,79 @@ no_index:
 provides:
   Code::TidyAll:
     file: lib/Code/TidyAll.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Cache:
     file: lib/Code/TidyAll/Cache.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Config::INI::Reader:
     file: lib/Code/TidyAll/Config/INI/Reader.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Git::Precommit:
     file: lib/Code/TidyAll/Git/Precommit.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Git::Prereceive:
     file: lib/Code/TidyAll/Git/Prereceive.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Git::Util:
     file: lib/Code/TidyAll/Git/Util.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin:
     file: lib/Code/TidyAll/Plugin.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::CSSUnminifier:
     file: lib/Code/TidyAll/Plugin/CSSUnminifier.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::JSBeautify:
     file: lib/Code/TidyAll/Plugin/JSBeautify.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::JSHint:
     file: lib/Code/TidyAll/Plugin/JSHint.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::JSLint:
     file: lib/Code/TidyAll/Plugin/JSLint.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::JSON:
     file: lib/Code/TidyAll/Plugin/JSON.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::MasonTidy:
     file: lib/Code/TidyAll/Plugin/MasonTidy.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PHPCodeSniffer:
     file: lib/Code/TidyAll/Plugin/PHPCodeSniffer.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PerlCritic:
     file: lib/Code/TidyAll/Plugin/PerlCritic.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PerlTidy:
     file: lib/Code/TidyAll/Plugin/PerlTidy.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PodChecker:
     file: lib/Code/TidyAll/Plugin/PodChecker.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PodSpell:
     file: lib/Code/TidyAll/Plugin/PodSpell.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::PodTidy:
     file: lib/Code/TidyAll/Plugin/PodTidy.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Plugin::SortLines:
     file: lib/Code/TidyAll/Plugin/SortLines.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Result:
     file: lib/Code/TidyAll/Result.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::SVN::Precommit:
     file: lib/Code/TidyAll/SVN/Precommit.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::SVN::Util:
     file: lib/Code/TidyAll/SVN/Util.pm
-    version: '0.23'
+    version: '0.24'
   Code::TidyAll::Util::Zglob:
     file: lib/Code/TidyAll/Util/Zglob.pm
-    version: '0.23'
+    version: '0.24'
   Test::Code::TidyAll:
     file: lib/Test/Code/TidyAll.pm
-    version: '0.23'
+    version: '0.24'
 requires:
   Capture::Tiny: '0'
   Config::INI::Reader: '0'
@@ -112,6 +113,7 @@ requires:
   File::Basename: '0'
   File::Find: '0'
   File::Path: '0'
+  File::Slurp::Tiny: '0'
   File::Spec::Functions: '0'
   File::Temp: '0'
   File::Zglob: '0'
@@ -136,7 +138,7 @@ resources:
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=Code-TidyAll
   homepage: http://metacpan.org/release/Code-TidyAll
   repository: git://github.com/autarch-code/perl-code-tidyall.git
-version: '0.23'
+version: '0.24'
 x_Dist_Zilla:
   perl:
     version: '5.016003'
@@ -473,7 +475,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: 0
-          tag: v0.23
+          tag: v0.24
           tag_format: v%v
           tag_message: v%v
           time_zone: local

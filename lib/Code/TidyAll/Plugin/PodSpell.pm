@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::PodSpell;
-$Code::TidyAll::Plugin::PodSpell::VERSION = '0.23';
+$Code::TidyAll::Plugin::PodSpell::VERSION = '0.24';
 use Code::TidyAll::Util qw(basename uniq);
 use Capture::Tiny qw();
 use IPC::System::Simple qw();
@@ -9,8 +9,8 @@ use Moo;
 use Text::ParseWords qw(shellwords);
 extends 'Code::TidyAll::Plugin';
 
-has 'ispell_argv' => ( is => 'ro', default => sub { '' } );
-has 'ispell_cmd'  => ( is => 'ro', default => sub { 'ispell' } );
+has 'ispell_argv' => ( is => 'ro', default => q{} );
+has 'ispell_cmd'  => ( is => 'ro', default => 'ispell' );
 has 'suggest'     => ( is => 'ro' );
 
 sub validate_file {
@@ -52,7 +52,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

@@ -1,12 +1,13 @@
 package Code::TidyAll::Plugin;
-$Code::TidyAll::Plugin::VERSION = '0.23';
-use Code::TidyAll::Util qw(basename read_file write_file);
+$Code::TidyAll::Plugin::VERSION = '0.24';
+use Code::TidyAll::Util qw(basename);
 use Code::TidyAll::Util::Zglob qw(zglobs_to_regex);
+use File::Slurp::Tiny qw(read_file write_file);
 use Scalar::Util qw(weaken);
 use Moo;
 
 # External
-has 'argv'         => ( is => 'ro', default => sub { '' } );
+has 'argv'         => ( is => 'ro', default => q{} );
 has 'class'        => ( is => 'ro' );
 has 'cmd'          => ( is => 'lazy' );
 has 'ignore'       => ( is => 'ro' );
@@ -148,7 +149,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

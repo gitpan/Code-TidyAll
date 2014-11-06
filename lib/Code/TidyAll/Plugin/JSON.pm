@@ -1,5 +1,5 @@
 package Code::TidyAll::Plugin::JSON;
-$Code::TidyAll::Plugin::JSON::VERSION = '0.23';
+$Code::TidyAll::Plugin::JSON::VERSION = '0.24';
 use strict;
 use warnings;
 
@@ -8,7 +8,7 @@ use Moo;
 
 extends 'Code::TidyAll::Plugin';
 
-has 'ascii' => ( is => 'ro', default => sub { 0 } );
+has 'ascii' => ( is => 'ro', default => 0 );
 
 sub transform_source {
     my $self   = shift;
@@ -31,7 +31,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

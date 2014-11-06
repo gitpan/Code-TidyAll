@@ -1,16 +1,17 @@
 package Code::TidyAll;
-# git description: v0.22-2-g9f58dcc
+# git description: v0.23-5-gf03d1f8
 
-$Code::TidyAll::VERSION = '0.23';
+$Code::TidyAll::VERSION = '0.24';
 use Cwd qw(realpath);
 use Code::TidyAll::Config::INI::Reader;
 use Code::TidyAll::Cache;
 use Code::TidyAll::Util
-  qw(abs2rel basename can_load dirname dump_one_line mkpath read_dir read_file rel2abs tempdir_simple uniq write_file);
+  qw(abs2rel basename can_load dirname dump_one_line mkpath read_dir rel2abs tempdir_simple uniq);
 use Code::TidyAll::Result;
 use Date::Format;
 use Digest::SHA1 qw(sha1_hex);
 use File::Find qw(find);
+use File::Slurp::Tiny qw(read_file write_file);
 use File::Zglob;
 use List::MoreUtils qw(uniq);
 use Moo;
@@ -22,15 +23,15 @@ use warnings;
 sub default_conf_names { ( 'tidyall.ini', '.tidyallrc' ) }
 
 # External
-has 'backup_ttl'    => ( is => 'ro', default => sub { '1 hour' } );
+has 'backup_ttl'    => ( is => 'ro', default => '1 hour' );
 has 'check_only'    => ( is => 'ro' );
 has 'data_dir'      => ( is => 'lazy' );
-has 'iterations'    => ( is => 'ro', default => sub { 1 } );
+has 'iterations'    => ( is => 'ro', default => 1 );
 has 'list_only'     => ( is => 'ro' );
-has 'mode'          => ( is => 'ro', default => sub { 'cli' } );
+has 'mode'          => ( is => 'ro', default =>  'cli'  );
 has 'no_backups'    => ( is => 'ro' );
 has 'no_cache'      => ( is => 'ro' );
-has 'output_suffix' => ( is => 'ro', default => sub { '' } );
+has 'output_suffix' => ( is => 'ro', default => q{} );
 has 'plugins'       => ( is => 'ro', required => 1 );
 has 'quiet'         => ( is => 'ro' );
 has 'recursive'     => ( is => 'ro' );
@@ -490,7 +491,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 

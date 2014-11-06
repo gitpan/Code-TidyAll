@@ -1,20 +1,21 @@
 package Code::TidyAll::Git::Prereceive;
-$Code::TidyAll::Git::Prereceive::VERSION = '0.23';
+$Code::TidyAll::Git::Prereceive::VERSION = '0.24';
 use Code::TidyAll;
-use Code::TidyAll::Util qw(dirname realpath tempdir_simple read_file write_file);
+use Code::TidyAll::Util qw(dirname realpath tempdir_simple);
 use Capture::Tiny qw(capture);
 use Digest::SHA1 qw(sha1_hex);
+use File::Slurp::Tiny qw(read_file write_file);
 use IPC::System::Simple qw(capturex run);
 use Moo;
 use Try::Tiny;
 
 # Public
-has 'allow_repeated_push' => ( is => 'ro', default => sub { 3 } );
+has 'allow_repeated_push' => ( is => 'ro', default => 3 );
 has 'conf_name'           => ( is => 'ro' );
 has 'extra_conf_files'    => ( is => 'ro', default => sub { [] } );
-has 'git_path'            => ( is => 'ro', default => sub { 'git' } );
+has 'git_path'            => ( is => 'ro', default =>  'git' );
 has 'reject_on_error'     => ( is => 'ro' );
-has 'tidyall_class'       => ( is => 'ro', default => sub { "Code::TidyAll" } );
+has 'tidyall_class'       => ( is => 'ro', default => 'Code::TidyAll' );
 has 'tidyall_options'     => ( is => 'ro', default => sub { {} } );
 
 sub check {
@@ -149,7 +150,7 @@ __END__
 
 =head1 VERSION
 
-version 0.23
+version 0.24
 
 =head1 SYNOPSIS
 
